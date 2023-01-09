@@ -1,4 +1,3 @@
-# una volta completato il codice, immettiamo una variabile globale 'game_over' che ci dà la possibilità di chiudere il gioco e riavviarlo.
 # per creare un exe, utilizza il terminal in pycharm e scrivi pyinstaller --onefile main.py (cerca di capire se vale anche se hai più di un file, come in questo caso)
 import colorama
 from colorama import Fore, Back, Style
@@ -8,7 +7,7 @@ from art import titolo1, titolo2, titolo3, act1, act1_title, sansprint
 colorama.init(autoreset=True)
 
 endings = 0
-timer = 1
+timer = 0
 forza = 0
 soldi = 300
 final = ''
@@ -22,7 +21,7 @@ dead_andrea = False
 party = []
 dead_party = []
 psi_cosa = ''
-oggetti = ["merendina_rara"]
+oggetti = []
 game_over = False
 continui = 'y'
 
@@ -300,7 +299,7 @@ def finale_buono():
         printslow("Sei troppo carico e quindi decidi di non mangiare la torta perché vuoi assolutamente suonare. \n"
                   "Il sig. Panazzi cerca di convincerti, ma tu persisti e non vuoi mangiare. \n"
                   "Il sig. Panazzi diventa paonazzo, tira fuori il cazzo e inizia a volare. \n"
-                  "Bestemmia tutte le divinità dello scibile umano e uccide tutti i tuoi amici davanti agli occhi.",
+                  "Bestemmia tutte le divinità dello scibile umano e uccide tutti i tuoi amici davanti ai tuoi occhi.",
                   150, 'testo')
         return 'a'
 
@@ -323,30 +322,20 @@ def orologio():
     elif int(orario) >= 22:
         printslow("Si è fatta una certa.", 150, 'testo')
         if 'andrea' in party and 'giulio' in party and 'agron' in party and 'samuel' in party:
-            x = finale_buono()
-            if x == 'a':
-                return 'a'
+            return finale_buono()
         elif 'andrea' in party or 'giulio' in party or 'agron' in party or 'samuel' in party:
-            x = finale_neutro()
-            if x == 'a':
-                return 'a'
+            return finale_neutro()
         else:
-            x = finale_triste()
-            if x == 'a':
-                return 'a'
+            return finale_triste()
+
 
     if orario % 1 == 0.5:
         mezza = " e mezza"
-    else:
-        mezza = ""
+
     # glicemic timer condition
     if orario % 2 == 0 and int(orario) > 8 and not glic_count:
-        # if glicemia() == 'a':
-        #     return 'a'
-        x = glicemia()
         glic_count = True
-        if x == 'a':
-            return 'a'
+        return glicemia()
     elif orario % 2 == 0 and int(orario) > 8 and glic_count:
         glic_count = False
         return str(int(orario)) + (mezza)
@@ -397,6 +386,7 @@ def RPG(mod_forza):
         time.sleep(0.5)
         printslow(f"Preparati a combattere contro questi abomini!", 150, 'testo')
         time.sleep(1.0)
+        # action #
         nemici = {
             "Palinuro": [40, 3, 2, True, 'Osso Duro'],
             "Kamasi Washington": [80, 2, 3, True, 'Strombazzata! \nPEPEPEPEPEPEPEP-PIIIIIIIIII'],
@@ -405,6 +395,7 @@ def RPG(mod_forza):
         palinuro_death = False
         extra_danno = 0
         nemici_list = ["Palinuro", "Kamasi Washington", "Il Signor Panazzi"]
+
         for nemico in nemici_list:
             if not palinuro_death:
                 if current_hp_tommy > 0:
@@ -496,6 +487,11 @@ def RPG(mod_forza):
                                 printslow("Bevi un estathe. Recuperi 20HP!", 150, 'testo')
                                 current_hp_tommy += 20
                                 oggetti.remove('estathe')
+                            elif 'merendina_rara' in oggetti:
+                                printslow("Mangi uno Scrofix. Yum! Recuperi 30HP e ti senti fortissimo!", 150, 'testo')
+                                current_hp_tommy += 30
+                                forza += 1
+                                oggetti.remove('merendina_rara')
                             else:
                                 printslow("Non hai snack da consumare.", 150, 'testo')
                         elif turno_tommy == 'm':
@@ -508,7 +504,7 @@ def RPG(mod_forza):
                                               f"{nemico} è sconfitto!", 150, 'testo')
                                     oggetti.remove(psi_cosa)
                                     current_hp_tommy = cura(max_hp, current_hp_tommy)
-                                    printslow(f"Recuperi HP dopo la battgalia. Ora sei a {current_hp_tommy} HP", 150,
+                                    printslow(f"Recuperi HP dopo la battaglia. Ora sei a {current_hp_tommy} HP", 150,
                                               'testo')
                                     printslow(f"Sei salito di livello! Danno + 1", 150, 'testo')
                                     extra_danno += 1
@@ -616,8 +612,7 @@ def RPG(mod_forza):
 
 # Percent calculator
 def percentuale(num1, num2):
-    percent = (num1 * num2) / 100
-    return percent
+    return ((num1 * num2) / 100)
 
 # minigioco compravendita
 def compravendita():
@@ -695,6 +690,7 @@ def compravendita():
                     # calcolatore di prezzo di vendita
                     prezzo_finale = costo + (percentuale(costo, random.randint(-5, 5)))
                     counter = -1
+                    # TODO concatena le clause
                     for tipo1 in mio_piatto:
                         counter += 1
                         if tipo1 == richiesta_mercato[counter]:
@@ -793,6 +789,7 @@ while not game_over:
         ######## COMMMENT DA QUA PER TESTARE #########
         ##############################################
         part_end = False
+        orologio()
         printslow(f"- Aaaaah, che bella dormita! \n- Cazzo ma sono le 8, ho un botto di tempo oggi! Quasi quasi...", 80, 'tommy')
         choice1 = input(Fore.YELLOW + Back.BLACK + "Type 'c' per fare colazione, type 'm' per masturbarti: ").lower()
         if choice1 == "m":
@@ -923,7 +920,6 @@ while not game_over:
                     if timer % 2 == 0 and int(timer) >= 2:
                         final = orologio()
                         if final == 'a':
-                            print('bbb')
                             part_end = True
                             collepaganello = False
                             game_over = True
@@ -1077,7 +1073,7 @@ while not game_over:
                         printslow("Carichi visto il bel tempo primaverile e la tangibile voglia di fica fresca che c’è nell’aria, \n"
                                   "decidete di straziare i vostri polmoni con la pettata della croce.", 150, 'testo')
                         printslow("- Dio canissimo me devo fa minimo 8 docce adesso.", 150, 'giulio')
-                        printslow("- Cazzo sei il re delle docce, è giusto così!", 150 ,'tommy')
+                        printslow("- Cazzo sei il re delle docce, è giusto così!", 150,'tommy')
                         printslow("Arrivati in cima alla croce, vi sedete per terra, casa di nonno Mario è in primo piano e Fabriano rumoreggia ai suoi piedi. \n"
                                   "Alla vista dei primi fiori delle ginestre che colorano la vallata, decidi di mettere della musica, musica triste ovviamente. \n"
                                   "Partono gli Smiths, intro di chitarra, “Punctured bicycle on a hillside desolate, Will nature make a man of me yet?”, \n"
