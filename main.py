@@ -8,7 +8,7 @@ from art import titolo1, titolo2, titolo3, act1, act1_title, sansprint
 colorama.init(autoreset=True)
 
 endings = 0
-timer = 0
+timer = 1
 forza = 0
 soldi = 300
 final = ''
@@ -22,7 +22,7 @@ dead_andrea = False
 party = []
 dead_party = []
 psi_cosa = ''
-oggetti = []
+oggetti = ["merendina_rara"]
 game_over = False
 continui = 'y'
 
@@ -131,35 +131,31 @@ def finale_soldi(money):
         return 'a'
 
 # generatore di tasso glicemico
+# TODO: check how to connect clauses on Mac
 def glicemia():
     global forza
+    snacks = ["merendina", "merendina_rara", "estathe"]
+    snack_counter = 0
     printslow("Stai avendo un calo di zuccheri, ti devi magnà qualcosa.", 150, 'testo')
-    mangia = True
-    while mangia:
-        if "merendina" in oggetti or "merendina_rara" in oggetti or "estathe" in oggetti:
-            if "merendina_rara" in oggetti:
+    for i in snacks:
+        if i in oggetti:
+            snack_counter += 1
+            if i == "merendina_rara":
                 oggetti.remove("merendina_rara")
                 printslow("Assorbi zuccheri e proteine dalla merendina rara. Forza + 1!", 150, 'testo')
                 forza += 1
-                mangia = False
-            elif "merendina" in oggetti:
-                oggetti.remove("merendina")
-                printslow(f"Assorbi zuccheri ingurgitando lo snack.", 150, 'testo')
-                mangia = False
-            elif "estathe" in oggetti:
-                oggetti.remove("estathe")
-                printslow(f"Assorbi zuccheri ingurgitando lo snack.", 150, 'testo')
-                mangia = False
-        elif not oggetti:
-            printslow("Non resisti un secondo di più: svieni salutando la terra con una rullata.", 80,
-                      'testo')
-            mangia = False
-            return 'a'
+                break
+            else:
+                oggetti.remove(i)
+                printslow("Assorbi zuccheri dalla merendina.", 150, 'testo')
+                break
         else:
-            printslow("Non resisti un secondo di più: svieni salutando la terra con una rullata.", 80,
-                      'testo')
-            mangia = False
-            return 'a'
+            pass
+    if snack_counter == 0:
+        printslow("Non resisti un secondo di più: svieni salutando la terra con una rullata.", 80,
+                  'testo')
+        return 'a'
+
 
 def finale_triste():
     global endings
