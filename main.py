@@ -1,778 +1,49 @@
 # per creare un exe, utilizza il terminal in pycharm e scrivi pyinstaller --onefile main.py (cerca di capire se vale anche se hai più di un file, come in questo caso)
 import colorama
 from colorama import Fore, Back, Style
+import GlVar
+from Finali import finale_triste, finale_soldi, finale_neutro, finale_buono, finale_genocide
 import sys, time, random
 from art import titolo1, titolo2, titolo3, act1, act1_title, sansprint
+from Compravendita import compravendita
+from printing import printslow
+from Orologio import orologio
+from RPG import RPG
 
 colorama.init(autoreset=True)
-
-endings = 0
-timer = 0
-forza = 0
-soldi = 300
-final = ''
-glic_count = False
-samuel_flag = True
-agron_dialogue = True
-agron_flag = True
-cripi_flag = True
-dialogo1_andrea = True
-dead_andrea = False
-party = []
-dead_party = []
-psi_cosa = ''
-oggetti = []
-game_over = False
-continui = 'y'
-
-velocita_testo = input(Fore.YELLOW + Style.BRIGHT + Back.BLACK + "Scegli la velocità del testo a schermo. \n"
-                                                                         "Type: 'lento', 'normale' o 'veloce': ").lower()
-if velocita_testo == "lento":
-    velocita_testo = 0.5
-elif velocita_testo == "normale":
-    velocita_testo = 1
-elif velocita_testo == "veloce":
-    velocita_testo = 4
-else:
-    velocita_testo = 1
-
-lista_personaggi = ['testo', 'tommy', 'giulio', 'samuel', 'agron', 'andrea']
-personaggi = {
-    "testo": [Fore.WHITE, Style.NORMAL],
-    "tommy": [Fore.MAGENTA, Style.BRIGHT],
-    "giulio": [Fore.RED, Style.NORMAL],
-    "samuel": [Fore.GREEN, Style.NORMAL],
-    "agron": [Fore.BLUE, Style.NORMAL],
-    "andrea": [Fore.CYAN, Style.NORMAL]
-}
-
-# for personaggio in lista di personaggi. se personaggio == p: for l in t: sys.stdout.write(personaggi[p][0] + l)
-
-def printslow(t, s, p):
-    global lista_personaggi
-    for pers in lista_personaggi:
-        if pers == p:
-            for l in t:
-                sys.stdout.write(personaggi[p][0] + personaggi[p][1] + Back.BLACK + l)
-                sys.stdout.flush()
-                time.sleep(random.random() * 10.0 / (s * velocita_testo))
-    print()
-
-def finale_genocide(sans):
-    if 'andrea' in sans and 'giulio' in sans and 'agron' in sans and 'samuel' in sans:
-        global endings
-        endings += 1
-        printslow("Birds are singing, flowers are blooming...\n"
-                  "On days like these, kids like you...\n"
-                  "Should be burning in hell.\n"
-                  " \n", 50, 'testo')
-        printslow(sansprint, 450, 'testo')
-        time.sleep(1.0)
-        printslow(f"\nFinale Genocide - Hai sbloccato {endings} finali su 7!", 150, 'testo')
-        return 'a'
-
-def finale_soldi(money):
-    global endings
-    if money >= 1000:
-        printslow(f"- Cazzo, ho {money} euro, mi sa che sono pronto a fare l'affare della vita!", 150, 'tommy')
-        time.sleep(0.5)
-        printslow("Scrolli marketplace sul cellulare con una mano, Reverb sul computer con l'altra.\n"
-                  "I tuoi occhi sono indipendenti, sembri un camaleonte.\n"
-                  "Dopo un po' di ricerca, lo trovi: Un ride da 80', unico, fatto di una lega di metalli mai vista,\n"
-                  "con una campana gigantesca argentea con riflessi azzurri e rossi. \n"
-                  "Incredibile, non avevi letteralmente mai visto una roba del genere.", 150, 'testo')
-        printslow("- Ok, non ci penso nemmeno un secondo di più, questo è il piatto DELLA VITA.", 200, 'tommy')
-        printslow("Noti che il venditore si trova a San Michele. Ma come hai fatto a non averlo notato prima?\n"
-                  "Sali in macchina e vai. Pregusti il sustain e il ping che può avere un piatto così grande.\n"
-                  "Ti immagini astri e stelle comparire con ogni bacchettata, note profonde e scrosci infiniti di metallo.",
-                  150, 'testo')
-        printslow("- Porcoddio che figata spaziale ahahahaha", 200, 'tommy')
-        time.sleep(1.0)
-        printslow(
-            "Arrivi nel punto concordato col venditore. Stranamente, è una spiazzo vuoto in cima a una collina. Non c'è nessuno.",
-            150, 'testo')
-        printslow("- Vabbè aspettiamo un altro po', tanto non ho pagato ancora.", 150, 'tommy')
-        printslow("Aspetti altri venti minuti mentre cerchi informazioni sul piatto. Non trovi letteralmente nulla.\n"
-                  "Evidentemente è un progetto artigianale.\n"
-                  "............\n"
-                  "Dopo 30 minuti, decidi di andartene, ormai è chiaro che non verrà nessuno. Stai per salire in macchina quando vieni\n"
-                  "assalito da una luce fortissima e un breve rumore, come un l'effetto Doppler.", 150, 'testo')
-        printslow("- Ma che cazzo...?", 150, 'tommy')
-        printslow("La luce diventa più fioca e finalmente lo vedi: è arrivato il tuo piatto.\n"
-                  "Tiri fuori una bacchetta e lo colpisci fortissimo. Invece di una nota, senti però una voce:\n"
-                  "- Terrestre, ti ringrazio a nome dell'universo. Accettando il mio invito,\n"
-                  "hai fatto sì che io potessi liberarmi dalle maglie elettroniche di internet.\n"
-                  "Forse non lo sai, ma il cosmo e internet sono strettamente collegati. Gli 'alieni', come li chiamate voi terrestri,\n"
-                  "vivono nel cyberspazio.\n"
-                  "Le foto di avvistamenti che ogni tanto sbucano su internet sono in realtà foto segnaletiche:\n"
-                  "noi extraterrestri siamo sbadati e dimentichiamo spesso i nostri mezzi, che puntualmente ci vengono sequestrati dalle autorità.",
-                  150, 'testo')
-        time.sleep(1.0)
-        printslow("Sei totalmente sbigottito, ma anche un po' incazzato: in fondo tu ti volevi comprà un piatto, \n"
-                  "non conoscere i misteri dell'universo.\n"
-                  "Non fai in tempo a lamentarti, che l'alieno ti interrompe:\n"
-                  "- Non ti preoccupare terrestre, avrai ciò per cui mi hai contattato.\n"
-                  "Solennemente, l'extraterrestre apre il portellone e ti lascia entrare. All'interno trovi\n"
-                  "Kendrick Lamar, Thom Yorke, Jimi Hendrix, Mark Guiliana e Sergio.", 150, 'testo')
-        time.sleep(1.0)
-        printslow("- Ma... Ma... Voi...", 150, 'tommy')
-        printslow("- Dass right my nigga, come in. Feel the power of the cosmos.\n"
-                  "Kendrick ti ha chiamato 'nigga'. Senti già il ritmo nel sangue ribollire e noti un aumento di 10cm nel pene.\n"
-                  "- Come on in, Tommy, let's jam!\n"
-                  "Compare un drumkit che mischia vintage e moderno, mesh e sabbiato, piatti e strumenti percussivi di ogni tipo,\n"
-                  "gentilmente assemblato da Jones e Guiliana. Ti spari una jam potentissima con Jimi Hendrix.\n", 150,
-                  'testo')
-        printslow("- Spaziale!!!!!!\n", 60, 'tommy')
-        time.sleep(1.5)
-        endings += 1
-        printslow("Lo ricorderai come il compleanno più bello della tua vita.\n"
-                  f"Ending Spaziale - Hai sbloccato {endings} finali su 7!", 150, 'testo')
-        return 'a'
-
-# generatore di tasso glicemico
-# TODO: check how to connect clauses on Mac
-def glicemia():
-    global forza
-    snacks = ["merendina", "merendina_rara", "estathe"]
-    snack_counter = 0
-    printslow("Stai avendo un calo di zuccheri, ti devi magnà qualcosa.", 150, 'testo')
-    for i in snacks:
-        if i in oggetti:
-            snack_counter += 1
-            if i == "merendina_rara":
-                oggetti.remove("merendina_rara")
-                printslow("Assorbi zuccheri e proteine dalla merendina rara. Forza + 1!", 150, 'testo')
-                forza += 1
-                break
-            else:
-                oggetti.remove(i)
-                printslow("Assorbi zuccheri dalla merendina.", 150, 'testo')
-                break
-        else:
-            pass
-    if snack_counter == 0:
-        printslow("Non resisti un secondo di più: svieni salutando la terra con una rullata.", 80,
-                  'testo')
-        return 'a'
-
-
-def finale_triste():
-    global endings
-    endings += 1
-    printslow(
-        "Ormai dopo quest'ora non si farà vedere più nessuno. Sei triste, non pensavi che avresti passato il compleanno da solo.\n"
-        "Vabbè, per rincuorarti un po', apri marketplace. C'è un messaggio da qualcuno che vuole comprare un tuo piatto:\n"
-        "'Salve Tommaso, sono il Signor Panazzi. Sono qui con tutti gli altri per dirti che questo gioco non è una speedrun,\n"
-        "quindi prenditi più tempo per esplorarlo meglio. Immaginalo come un Groundhog Day, e che ora potrai ricominciarlo da capo.\n"
-        "Mi raccomando, non mollare!'", 150, 'testo')
-    printslow(f"Bad Ending - Hai sbloccato {endings} finali su 7!", 150, 'testo')
-    return 'a'
-
-def finale_neutro():
-    global endings
-    endings += 1
-    printslow("Decidi di andare coi tuoi amici a prendere una cosa.\n"
-              "La serata procede bene, sei felice, ma a un tratto ricevi un messaggio:\n"
-              "'Salve Tommaso, sono il Signor Panazzi. Sono qui con tutti gli altri per dirti che questo gioco non è una speedrun,\n"
-              "quindi prenditi più tempo per esplorarlo meglio. Immaginalo come un Groundhog Day, e che ora potrai ricominciarlo da capo.\n"
-              "Mi raccomando, non mollare!'", 150, 'testo')
-    printslow(f"Neutral Ending - Hai sbloccato {endings} finali su 7!", 150, 'testo')
-    return 'a'
-
-def finale_buono():
-    global endings
-    endings += 1
-    printslow(
-        "Torni a casa per prepararti. Hai percepito che i tuoi amici hanno organizzato qualcosa, ma non hai capito bene cosa.\n"
-        "gli indizi che ti hanno dato puntano al centro città, ma non sai di preciso dove. Comunque sia, ti intriga l'idea di\n"
-        "risolvere un piccolo enigma.\n"
-        "                                            \n"
-        "Ti fai bello, ti sciacqui le palle due volte (non si sa mai) e scendi a Fabriano.\n"
-        "                                            \n"
-        "Arrivato al parcheggione, ti avvii verso il centro (dopo aver scritto un bel 'merdeporcoddio' su una macchina delle Poste)\n"
-        "e ti ritrovi in piazza. Vuoi raggiungere i tuoi amici, ma non hai ancora capito dove cazzo siano, e nessuno risponde al telefono.\n"
-        "Una merdosissima musica reggaeton ti fa girare lo sguardo. \nLE MACCHINETTE. \n"
-        "Stomaco in subbuglio, salivazione tipo cane di Pavlov, flusso sanguigno aumentato, pupille dilatate.\n"
-        "                                            \n"
-        "Se il glucosio chiama, Tommy risponde. \n"
-        "                                            \n"
-        "Strabiliato da quei colori sgargianti e dagli involucri sintetici di ottima fattura, sei pronto a perderti nel marasma \n"
-        "dell’indecisione davanti a cotanta scelta. \n"
-        "Inserisci un euro, vai per il Bounty. La macchinetta dà errore: \n"
-        "*** UF1P0K ***", 150, 'testo')
-    printslow("- DIO CANISSIMO MA CHE SUCCEDE?!", 200, 'tommy')
-    printslow("Hai bisogno di quello snack al cocco. Tenti di nuovo:\n"
-              "*** D10C4N8 ***", 150, 'testo')
-    printslow("- Non è possibile, che cazzo succede porcodio?!", 200, 'tommy')
-    printslow("Sei incazzato a mille, nessuno risponde, vuoi la tua dose, cazzo. \n"
-              "\n"
-              "RIPETERE PROCEDURA PER CODICE DI SBLOCCO.", 150, 'testo')
-    printslow("- È strano, le conosco a memoria e non ho mai visto nulla del genere. Provo ancora:", 150, 'tommy')
-    scelta = input(Fore.YELLOW + Back.BLACK + "Premi un tasto per inserire un codice: ")
-    printslow("*** WL4FY64 ***", 100, 'testo')
-    scelta = input(Fore.YELLOW + Back.BLACK + "Premi un tasto per inserire un codice: ")
-    printslow("*** K0KK0.0K ***", 100, 'testo')
-    scelta = input(Fore.YELLOW + Back.BLACK + "Premi un tasto per inserire un codice: ")
-    printslow("*** CR1ST0700 ***", 100, 'testo')
-    scelta = input(Fore.YELLOW + Back.BLACK + "Premi un tasto per inserire un codice: ")
-    printslow("*** FR4NC3S3 ***", 100, 'testo')
-    scelta = input(Fore.YELLOW + Back.BLACK + "Premi un tasto per inserire un codice: ")
-    printslow("*** PRCD10 ***", 100, 'testo')
-    scelta = input(Fore.YELLOW + Back.BLACK + "Premi un tasto per inserire un codice: ")
-    printslow("*** 6FR0C10 ***", 100, 'testo')
-    printslow("All’ultimo codice la macchinetta trema, fa versi strani, esce acqua da sotto. \n"
-              "È arrapatissima, ma è giusto così, solo tu la tocchi in quel modo, solo tu la guardi con quello sguardo di chi non desidera altro.\n"
-              "L’enorme donnona di acciaio scorre fuori dalla sede, e dietro di lei scorgi un tunnel.\n"
-              "                                                        \n"
-              "Senti della musica, odore di canne e posacenere. Nel corridoio le pareti sono tappezzate di donne nude, \n"
-              "ogni tanto capitano anche dei residui di aste della Millenium. La musica si fa più forte, arrivi a una porta.\n"
-              "                                                        \n"
-              "Inspiegabilmente apri la porta e ti ritrovi a Pusherland.\n"
-              "Dentro trovi tutti quanti, c’è in corso una jam extra-galattica, ma nel vero senso della parola! Infatti al basso trovi \n"
-              "un extraterrestre, alla batteria Palinuro (Lo Scheletro col Cazzo Duro), alla voce il sig. Panazzi, alla videocamera Kamasi Washington. \n"
-              "Nella stanzetta ci sono i tuoi amici che dicono cazzate con Jimi, Kendrick, Elvin Jones e altri mostri della musica.",
-              150, 'testo')
-    printslow("- MA CHE PORCODDIO SUCCEDE? DIO CARO È SPAZIALE!", 200, 'tommy')
-    printslow("- Visto caro Tommaso? Questo è il vero spirito di Pusherland!\n"
-              "Annuncia il sig. Panazzi.\n"
-              "Oggettivamente è il miglior compleanno della vita, ma non c’è compleanno senza torta.", 150, 'testo')
-    scelta_finale = input(Fore.YELLOW + Back.BLACK + "Mangi la torta? 'Y' o 'N': ").lower()
-    if scelta_finale == 'y':
-        printslow(
-            "Ovviamente non puoi rifiutare ulteriore saccarosio, già ti immagini una torta ricoperta di cioccolata al latte. Stai sbavando sulle scarpe di Andrea.\n"
-            "Arriva il sig. Panazzi, leader indiscusso del mondo conosciuto. Porta una torta gigante davanti ai tuoi occhi.\n"
-            "Prendi una fetta, STAMBURELLI IMPAZIENTE CON IL CUCCHIAINO, poi finalmente assaggi questa primizia cremosa.\n"
-            "                                                   ", 150, 'testo')
-        printslow("CIOCCOLATO FONDENTE", 30, 'testo')
-        printslow(
-            "Panazzi ha sbagliato, l’ha presa fondente. I muscoli del tuo viso si contraggono, smorfie mai viste. \n"
-            "Le tue labbra si contorcono, stanno entrando dentro la bocca. \n"
-            "Vieni completamente risucchiato all’interno di te stesso, ti trovi in un liquido arancione, senti l’odore dell’Estathè. \n"
-            "SEI ALL’INTERNO DEL TUO GLUCOSIO!\n"
-            "Non capisci assolutamente cosa cazzo stia succedendo, sei incazzato come una bestia per il fatto che qualche bastardo al mondo abbia inventato il gusto amaro. \n"
-            "La tua potenza zuccherina sta disciogliendo tutti gli esseri viventi.", 150, 'testo')
-        printslow("- TUTTI ZUCCHERO CAZZOOOOO! TUTTI ZUCCHEROOOOOOOO! \n"
-                  "PERCHÉ NON VOLETE MANGIARE SOLO ROBA DOLCE? PERCHÉ NESSUNO MI CAPISCE? PERCHÉ VI PRENDETE GIOCO DI ME? AMARI MERDOSI!",
-                  200, 'tommy')
-        printslow("Sei completamente impazzito. Il mondo ormai è glucosio puro.\n"
-                  "Dopo aver devastato l’umanità con la tua furia e aver reso tutto dolce, ti senti disgustato. \n"
-                  "Senti la necessità di aria, senti qualcosa che non va.\n"
-                  "                                                   \n"
-                  "Miracolosamente appare una figura celestiale, stupenda. Carnagione candida e ali immense, percepisci l’armonia dei suoi meravigliosi movimenti. \n"
-                  "È il sig. Ferrero, proprietario della omonima azienda, nonché padre dell’Estathè.", 150, 'testo')
-        printslow("- Sig. Ferrero, dove siamo?", 150, 'tommy')
-        printslow("-Questo è il mare di glucosio amico mio, siamo immersi nel brodo primordiale dello zucchero. \n"
-                  "Un mondo dove non occorre più nessun altro gusto, dove ogni essere vivente è diventato un dolce. \n"
-                  "Un mondo ambiguo, che non consente di percepire il confine materiale. \n"
-                  "Questo è il mondo che hai desiderato, compiendo una libera scelta.", 150, 'testo')
-        printslow("- Non lo so, non sono affatto sicuro...", 100, 'tommy')
-        printslow(
-            "- Se vuoi recuperare l’esistenza degli uomini dotati di altri gusti lo puoi fare, ma così nel mondo tornerebbe l’amaro e il sapido.",
-            150, 'testo')
-        printslow("Appoggi la testa sulle mani, poi dici tra te e te:", 150, 'testo')
-        printslow("- Un mondo di dolcezza in cui non c'è più l'amaro.\n"
-                  "Tuttavia, ho rincorso per anni questa dolcezza, ma non ho trovato altro che disgusto.", 100, 'tommy')
-        time.sleep(1.0)
-        printslow(
-            "Decidi di fare un passo indietro, nonostante sai benissimo che qualcuno prima o poi ti tirerà un colpo basso. \n"
-            "Riassorbi il glucosio primordiale all’interno di te stesso, le cose riprendono forma. Resusciti uscendo dalla tua bocca.",
-            150, 'testo')
-        time.sleep(1.0)
-        printslow(
-            "Ti ritrovi di nuovo a Pusherland, tutti gli amici con cui erano ti applaudono facendo i complimenti:", 150,
-            'testo')
-        printslow("- Congratulazioni!", 150, 'agron')
-        printslow("- Congratulazioni!", 150, 'testo')
-        printslow("- Congratulazioni!", 150, 'giulio')
-        printslow("- Congratulazioni!", 150, 'andrea')
-        printslow("- Congratulazioni!", 150, 'testo')
-        printslow("- Congratulazioni!", 150, 'samuel')
-        printslow("- Congratulazioni!", 150, 'testo')
-        printslow("BRAVO TOMMY, FINALMENTE HAI IL SENSO DEL GUSTO DI UN ADULTO!\n"
-                  "Ti fai coraggio, ti chini sopra la torta amara che è sul tavolo. La prendi con entrambe le mani. La mangi:",
-                  150, 'testo')
-        printslow("- CHE SCHIFO", 30, 'tommy')
-        time.sleep(2.0)
-        printslow(f"Good Ending - Hai sbloccato {endings} finali su 7!", 150, 'testo')
-        return 'a'
-    else:
-        printslow("Sei troppo carico e quindi decidi di non mangiare la torta perché vuoi assolutamente suonare. \n"
-                  "Il sig. Panazzi cerca di convincerti, ma tu persisti e non vuoi mangiare. \n"
-                  "Il sig. Panazzi diventa paonazzo, tira fuori il cazzo e inizia a volare. \n"
-                  "Bestemmia tutte le divinità dello scibile umano e uccide tutti i tuoi amici davanti ai tuoi occhi.",
-                  150, 'testo')
-        return 'a'
-
-# in-game timer
-def orologio():
-    global timer
-    global agron_dialogue
-    global party
-    global glic_count
-    # orologio
-    orario = 8 + (timer)
-    mezza = ""
-    if int(orario) >= 10 and agron_dialogue:
-        agron_dialogue = False
-        printslow("Ti arriva un messaggio, è Agron:", 150, 'testo')
-        printslow("Oh Bro auguri!!! Ci vediamo per una birra stasera?", 150, 'agron')
-        printslow("Grazie bro, sicuro! Dove?", 150, 'tommy')
-        printslow("Vienimi a prendere alle 18 e decidiamo. A stasera bro", 150, 'agron')
-        time.sleep(2.0)
-    elif int(orario) >= 22:
-        printslow("Si è fatta una certa.", 150, 'testo')
-        if 'andrea' in party and 'giulio' in party and 'agron' in party and 'samuel' in party:
-            return finale_buono()
-        elif 'andrea' in party or 'giulio' in party or 'agron' in party or 'samuel' in party:
-            return finale_neutro()
-        else:
-            return finale_triste()
-
-
-    if orario % 1 == 0.5:
-        mezza = " e mezza"
-
-    # glicemic timer condition
-    if orario % 2 == 0 and int(orario) > 8 and not glic_count:
-        glic_count = True
-        return glicemia()
-    elif orario % 2 == 0 and int(orario) > 8 and glic_count:
-        glic_count = False
-        return str(int(orario)) + (mezza)
-    return str(int(orario)) + (mezza)
+GlVar.init()
 
 # merendine-hoarder
 def merendare():
-    global oggetti
     porco = True
     while porco:
         merendinas = input(Fore.YELLOW + Back.BLACK + "Vuoi prendere un'altra merendina per dopo? 'Y' o 'N': ").lower()
         if merendinas == 'y':
-            oggetti.append("merendina")
+            GlVar.oggetti.append("merendina")
             printslow("Meglio prenderne una di riserva.", 150, 'tommy')
         else:
             printslow("Ok, basta, forse sto esagerando.", 150, 'tommy')
             porco = False
 
-# GDR
-def RPG(mod_forza):
-    global oggetti
-    global timer
-    global party
-    global dead_party
-    printslow("Lo schermo, ondulante in un mélange di tinte acide, ti dà il benvenuto:", 150, 'testo')
-    game_over_rpg = False
-    while not game_over_rpg:
-        global samuel_flag
-        max_hp = 30 + (mod_forza * 3)
-        current_hp_tommy = max_hp
-
-        def cura(maxhp, currenthp):
-            currenthp += int(maxhp / 4)
-            if currenthp > maxhp:
-                currenthp = maxhp
-            return currenthp
-
-        nome_giocatore = input(
-            Fore.YELLOW + Style.BRIGHT + Back.BLACK + "Come ti chiami, eroe dell'occidente?: ").title()
-        printslow(
-            f"Aaaah, {nome_giocatore}, interessante. Come forse avrai capito, c'è un motivo per cui di questo synth ci sono solo 10 esemplari:\n"
-            "ogniqualvolta c'è stata un'interruzione di corrente o un corto (in Polonia capitava spesso), chiunque stesse utilizzando il synth\n"
-            "ne veniva istantaneamente assorbito. I maligni spiriti che lo dominano sono troppo potenti, e solo chi è versato nell'antica arte del\n"
-            "'grać w gry wideo' può liberarsi. Purtroppo, nessuno per ora ci è riuscito.", 200, 'testo')
-        time.sleep(0.5)
-        timer += 0.5
-        printslow(f"{nome_giocatore}, è tutto nelle tue mani!", 150, 'testo')
-        time.sleep(0.5)
-        printslow(f"Preparati a combattere contro questi abomini!", 150, 'testo')
-        time.sleep(1.0)
-        # action #
-        nemici = {
-            "Palinuro": [40, 3, 2, True, 'Osso Duro'],
-            "Kamasi Washington": [80, 2, 3, True, 'Strombazzata! \nPEPEPEPEPEPEPEP-PIIIIIIIIII'],
-            "Il Signor Panazzi": [70, 5, 4, True, 'Quattro Pollici in Culo']
-        }
-        palinuro_death = False
-        extra_danno = 0
-        nemici_list = ["Palinuro", "Kamasi Washington", "Il Signor Panazzi"]
-
-        for nemico in nemici_list:
-            if not palinuro_death:
-                if current_hp_tommy > 0:
-                    current_hp_nemico = nemici[nemico][0]
-                    if nemico == "Palinuro":
-                        printslow(
-                            "Dalle viscere siliconiche del synth, esce fuori Palinuro, Lo Scheletro col Cazzo Duro!\n"
-                            "'SKREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n"
-                            f"'Combatti, {nome_giocatore}, o perisci,\n"
-                            f"'Oppure prendilo nel culo, come preferisci!'", 150, 'testo')
-                    elif nemico == "Kamasi Washington":
-                        printslow(
-                            "Se Palinuro era lo scheletro essiccato del synth, da qualche parte i generatori di suono \n"
-                            "dovrebbero essere ancora in funzione...", 150, 'testo')
-                        time.sleep(0.3)
-                        printslow("Mentre ragioni, senti dei passi pesanti avvicinarsi.", 150, 'testo')
-                        print("THUMP")
-                        time.sleep(1.0)
-                        print("THUMP")
-                        time.sleep(1.0)
-                        print("THUMP")
-                        time.sleep(1.0)
-                        printslow("Un agghiacciante barrito stride nell'aria.", 150, 'testo')
-                        printslow("........", 30, 'testo')
-                        printslow(f"'{nome_giocatore}, this is your time. Time to behold the power of music!'", 150,
-                                  'testo')
-                        time.sleep(1.0)
-                        printslow("Kamasi Washington è arrivato a farti il culo!", 150, 'testo')
-                    elif nemico == "Il Signor Panazzi":
-                        time.sleep(1.0)
-                        printslow("L'aria è gravida di silenzio. Un silenzio teso, elettrico.", 150, 'testo')
-                        time.sleep(1.0)
-                        printslow("Ti accingi ad andartene, quando a un tratto, una voce riempie il vuoto:", 150,
-                                  'testo')
-                        printslow("'Cosa credevi? Che i synth si costruissero da soli?'", 100, 'testo')
-                        printslow("Ti giri: Il Signor Panazzi si staglia nell'orizzonte di catrame e cavi.", 150,
-                                  'testo')
-                        printslow(f"'Caro il mio {nome_giocatore}, sei arrivato lontano. I miei complimenti.'", 100,
-                                  'testo')
-                        printslow(
-                            "Applaudendo lentamente, Il Signor Panazzi avanza. Puoi sentire da lontano il malvagio lezzo di mortadella che emana.",
-                            150, 'testo')
-                        printslow(
-                            "'La tua ora è arrivata. Non guardare indietro, in questo mondo non c'è più nulla che sia tuo.'\n"
-                            "'Con questo synth, evaderò dalla prigione spazio-temporale in cui mi trovo e finalmente trasformerò \n"
-                            "l'universo nella mia personale tavola calda. Combatti, ora!'", 100, 'testo')
-                    while nemici[nemico][3] and not game_over_rpg:
-                        turno_tommy = input(Fore.YELLOW + Style.BRIGHT + Back.BLACK + "Cosa vuoi fare? \n"
-                                                                                      "Type 'A' per attaccare,\n"
-                                                                                      "Type 'M' per fare una magia,\n"
-                                                                                      "Type 'S' per consumare uno snack,\n"
-                                                                                      "Type 'F' per risparmiare il nemico: ").lower()
-                        if turno_tommy == 'f' and nemico == 'Palinuro':
-                            printslow("Lasci andare Palinuro.\n"
-                                      "Lui ti guarda sbigottito, poi esclama:\n"
-                                      "'Nessuno mi aveva mai lasciato andare.'\n"
-                                      "'Tutti dicono Palinuro è cattivo, Palinuro fa paura, non voglio andare da Palinuro...'",
-                                      100, 'testo')
-                            printslow("'.........", 50, 'testo')
-                            printslow("...E fanno bene, perché sono una merda!'", 200, 'testo')
-                            printslow("Palinuro ti uccide con un colpo.", 150, 'testo')
-                            palinuro_death = True
-                            current_hp_tommy = 0
-                            game_over_rpg = True
-                        elif turno_tommy == 'f' and nemico == 'Kamasi Washington':
-                            if current_hp_nemico <= 20:
-                                printslow("'Now I see. You're the hero of light. You're my personal saviour.\n"
-                                          "Thanks for sparing me, I will make the world a better place.\n"
-                                          f"See you jazz cowboy!'", 150, 'testo')
-                                time.sleep(0.5)
-                                current_hp_tommy = cura(max_hp, current_hp_tommy)
-                                printslow(f"Recuperi HP dopo la battaglia. Ora sei a {current_hp_tommy} HP", 150,
-                                          'testo')
-                                printslow(f"Sei salito di livello! Danno + 1", 150, 'testo')
-                                extra_danno += 1
-                                nemici[nemico][3] = False
-                            else:
-                                printslow("'The music in me is not ready to give up yet.'", 150, 'testo')
-                        elif turno_tommy == 'f' and nemico == 'Il Signor Panazzi':
-                            printslow("Io sono la fine e l'inizio. Io sono il pandoro che mangia se stesso. \n"
-                                      "Non puoi sconfiggermi, puoi solo guardarmi mentre farcisco il mondo come un panino!",
-                                      150, 'testo')
-                        elif turno_tommy == 's':
-                            if 'merendina' in oggetti:
-                                printslow("Mangi una merendina. Recuperi 20HP!", 150, 'testo')
-                                current_hp_tommy += 20
-                                oggetti.remove('merendina')
-                            elif 'estathe' in oggetti:
-                                printslow("Bevi un estathe. Recuperi 20HP!", 150, 'testo')
-                                current_hp_tommy += 20
-                                oggetti.remove('estathe')
-                            elif 'merendina_rara' in oggetti:
-                                printslow("Mangi uno Scrofix. Yum! Recuperi 30HP e ti senti fortissimo!", 150, 'testo')
-                                current_hp_tommy += 30
-                                forza += 1
-                                oggetti.remove('merendina_rara')
-                            else:
-                                printslow("Non hai snack da consumare.", 150, 'testo')
-                        elif turno_tommy == 'm':
-                            if psi_cosa in oggetti:
-                                if nemico == 'Il Signor Panazzi':
-                                    printslow(f"'{psi_cosa} non ha nessun potere su di me!'", 150, 'testo')
-                                else:
-                                    printslow(f"Evochi il potere della magia {psi_cosa}!\n"
-                                              "****SDRSHH!****\n"
-                                              f"{nemico} è sconfitto!", 150, 'testo')
-                                    oggetti.remove(psi_cosa)
-                                    current_hp_tommy = cura(max_hp, current_hp_tommy)
-                                    printslow(f"Recuperi HP dopo la battaglia. Ora sei a {current_hp_tommy} HP", 150,
-                                              'testo')
-                                    printslow(f"Sei salito di livello! Danno + 1", 150, 'testo')
-                                    extra_danno += 1
-                                    nemici[nemico][3] = False
-                            else:
-                                printslow("Non conosci nessuna magia.", 150, 'testo')
-                        else:
-                            # attacco
-                            danno = mod_forza + int(round((random.random() * 5), 2)) + extra_danno
-                            current_hp_nemico -= danno
-                            printslow(f"Attacchi {nemico} con tutta la tua forza.\n"
-                                      f"Fai {danno} danni a {nemico}!", 150, 'testo')
-                            if current_hp_nemico <= 0:
-                                printslow(f"Hai sconfitto {nemico}!", 150, 'testo')
-                                current_hp_tommy = cura(max_hp, current_hp_tommy)
-                                printslow(f"Recuperi HP dopo la battaglia. Ora sei a {current_hp_tommy} HP", 150,
-                                          'testo')
-                                time.sleep(0.5)
-                                printslow(f"Sei salito di livello! Danno + 1", 150, 'testo')
-                                extra_danno += 1
-                                nemici[nemico][3] = False
-                                if nemico == "Il Signor Panazzi":
-                                    # vedi se funziona cosi
-                                    printslow("'Nooooooo, non può finire così!'", 80, 'testo')
-                                    printslow("Le urla elettroniche del Signor Panazzi ti trapanano i timpani.", 150,
-                                              'testo')
-                                    time.sleep(0.5)
-                                    printslow(
-                                        f"{nome_giocatore}, siamo i musicisti intrappolati nel synth: Tomek, Wiesław, Zbigniew, Małgorzata e Mela.\n"
-                                        "Le tue gesta sono state eroiche, e il giogo del Signor Panazzi è finalmente concluso. Ci hai liberato.\n"
-                                        "Nonostante ciò, sappiamo bene che chi vorresti avere indietro non è nessuno di noi, ma il tuo amico Boldrinskyi.\n"
-                                        "Per cui, eccolo qua. Noi invece continueremo a sviluppare questo synth, facendo in modo che un giorno possa portare gioia e rivoluzione.\n"
-                                        "Do Zobaczenia!", 150, 'testo')
-                                    time.sleep(0.5)
-                                    print("SWOOOOOOOSH")
-                                    time.sleep(0.5)
-                                    printslow(
-                                        "Con il lampo con cui tutto è iniziato, Il synth emette una fumata e ricompare Samuel.",
-                                        150, 'testo')
-                                    printslow("- Sa! Dio caro ma dove cazzo eri finito? m'è preso un colpo!", 150,
-                                              'tommy')
-                                    printslow(
-                                        "- Tommy porcoddio sono finito in una pozza calda d'estathè dentro il synth, ti dice niente???",
-                                        150, 'samuel')
-                                    printslow("Samuel vuole fartela pagare. Ti seguirà per il resto della giornata.\n"
-                                              "Samuel si unisce al party!", 150, 'testo')
-                                    party.append('samuel')
-                                    samuel_flag = False
-                                    return samuel_flag
-                                    game_over_rpg = True
-                        if nemici[nemico][3] and not palinuro_death:
-                            # i nemici potrebbero utilizzare sempre lo stesso calcolo per le azioni, cambiando solo l'effetto delle mosse #
-                            time.sleep(0.5)
-                            printslow(f"Tocca a {nemico}!", 150, 'testo')
-                            time.sleep(0.5)
-                            azione_nemico = ["attacco", "attacco", "attacco", "attacco", "special"]
-                            turno_nemico = random.choice(azione_nemico)
-                            if turno_nemico == "special":
-                                if current_hp_nemico <= int(nemici[nemico][0] / 4):
-                                    printslow(f"{nemico} usa il suo special, *{nemici[nemico][4]}*!", 150, 'testo')
-                                    danno_nemico = (nemici[nemico][1] + int(round((random.random() * 5), 2))) * \
-                                                   nemici[nemico][2]
-                                    printslow(f"{nome_giocatore} riceve {danno_nemico} danni!", 150, 'testo')
-                                    current_hp_tommy -= danno_nemico
-                                    printslow(f"Ti sono rimasti {current_hp_tommy} HP", 150, 'testo')
-                                else:
-                                    printslow(f"{nemico} ti attacca!", 150, 'testo')
-                                    danno_nemico = nemici[nemico][1] + int(round((random.random() * 5), 2))
-                                    printslow(f"{nome_giocatore} riceve {danno_nemico} danni!", 150, 'testo')
-                                    current_hp_tommy -= danno_nemico
-                                    printslow(f"Ti sono rimasti {current_hp_tommy} HP", 150, 'testo')
-                            else:
-                                printslow(f"{nemico} ti attacca!", 150, 'testo')
-                                danno_nemico = nemici[nemico][1] + int(round((random.random() * 5), 2))
-                                printslow(f"{nome_giocatore} riceve {danno_nemico} danni!", 150, 'testo')
-                                current_hp_tommy -= danno_nemico
-                                printslow(f"Ti sono rimasti {current_hp_tommy} HP", 150, 'testo')
-                            if current_hp_tommy <= 0:
-                                printslow(f"Colpo fatale! {nome_giocatore} è stato sconfitto!", 150, 'testo')
-                                game_over_rpg = True
-        if current_hp_tommy <= 0:
-            printslow("Game Over.", 40, 'testo')
-            riprova = input(Fore.YELLOW + Style.BRIGHT + Back.BLACK + "Vuoi riprovare? 'Y' o 'N': ").lower()
-            if riprova == 'y' and palinuro_death:
-                palinuro_death = False
-                time.sleep(1.0)
-                game_over_rpg = False
-            elif riprova == 'y':
-                time.sleep(1.0)
-                game_over_rpg = False
-            else:
-                samuel_flag = False
-                printslow(
-                    "Decidi di lasciare Samuel nel synth. In fondo avrebbe voluto andarsene così, tra musica e amici.",
-                    150, 'testo')
-                printslow("- Vabbè io ci ho provato. Ovviamente il videogioco da cui devo liberare Samuel\n"
-                          "è a cazzo di difficoltà hardcore, porcoddio.", 150, 'tommy')
-                printslow(f"Esci da casa di Samuel.", 150, 'testo')
-                dead_party.append('samuel')
-                s = finale_genocide(dead_party)
-                if s == 'a':
-                    return 'a'
-                time.sleep(1.0)
-                return samuel_flag
-
-# Percent calculator
-def percentuale(num1, num2):
-    return ((num1 * num2) / 100)
-
-# minigioco compravendita
-def compravendita():
-    mio_piatto = []
-    keep_hustling = True
-    while keep_hustling:
-        global final
-        global soldi
-        global timer
-        printslow("Apri marketplace. Chissà quale piatto goloso ci capiterà?", 150, 'testo')
-        # selettore di marca
-        marca_list = ["Sergio's", "Constantinople", "Constantinople", "Zildjian", "Zildjian", "Zildjian", "Ufip",
-                      "Ufip", "Ufip", "Ufip"]
-        marca_chooser = random.choice(marca_list)
-        marca = {
-            # [costo, percentuale di ricarico]
-            "Sergio's": [150, 40],
-            "Constantinople": [100, 20],
-            "Zildjian": [70, 14],
-            "Ufip": [40, 7]
-        }
-        # selettore di condizione
-        condizione_list = ["vintage", "nuovo", "nuovo"]
-        condizione_chooser = random.choice(condizione_list)
-        condizione = {
-            "vintage": [100, 20],
-            "nuovo": [50, 10]
-        }
-        # selettore di tipologia
-        tipologia_list = ["crash", "charlestone", "ride"]
-        tipologia_chooser = random.choice(tipologia_list)
-        tipologia = {
-            "crash": 30,
-            "charlestone": 50,
-            "ride": 70
-        }
-        # generatore di costo + acquisto
-        costo = round(marca[marca_chooser][0] + condizione[condizione_chooser][0] + tipologia[tipologia_chooser] + (
-                    random.random() * random.randint(2, 10)), 2)
-        acquista = (input(
-            Fore.MAGENTA + Back.BLACK + f"Ah! un {tipologia_chooser} {marca_chooser} {condizione_chooser} a {costo} euro! Quasi quasi...\n" + Fore.YELLOW + Style.BRIGHT + Back.BLACK + f"Hai {soldi} euro, vuoi comprare il piatto? Y o N: ")).lower()
-        if acquista == "y":
-            if soldi < costo:
-                printslow("- Mi sa che devo chiedere un prestito a babbo, ma mi ha già dato i soldi per i Radiohead.",
-                          120, 'tommy')
-                keep_hustling = False
-                keep_going = input(
-                    Fore.MAGENTA + Style.BRIGHT + Back.BLACK + "continuo?" + Fore.YELLOW + Style.BRIGHT + Back.BLACK + " Y o N: ").lower()
-                if keep_going == "y":
-                    timer += 0.5
-                    if timer % 2 == 0 and int(timer) >= 2:
-                        final = orologio()
-                        if final == 'a':
-                            another_shot = False
-                            keep_hustling = False
-                            keep_going = False
-                            return True
-                    printslow(f"Sono le {orologio()}.", 150, 'testo')
-                    keep_hustling = True
-            else:
-                soldi = round(soldi - costo, 2)
-                printslow(f"Ora hai {soldi} euro", 150, 'testo')
-                mio_piatto.clear()
-                mio_piatto.extend([tipologia_chooser, marca_chooser, condizione_chooser])
-                # generatore di condizioni di vendita
-                another_shot = True
-                while another_shot:
-                    richiesta_mercato = [random.choice(tipologia_list), random.choice(marca_list),
-                                         random.choice(condizione_list)]
-                    printslow(f"- Uhm, a quanto pare tutti stanno cercando un "
-                              f"\n{richiesta_mercato[0]} {richiesta_mercato[1]} {richiesta_mercato[2]}. \n"
-                              f"Forse dovrei vendere il mio "
-                              f"\n{mio_piatto[0]} {mio_piatto[1]} {mio_piatto[2]} \n"
-                              f"e prendere qualcos'altro, vediamo a quanto posso venderlo!", 300, 'tommy')
-                    # calcolatore di prezzo di vendita
-                    prezzo_finale = costo + (percentuale(costo, random.randint(-5, 5)))
-                    counter = -1
-                    # TODO concatena le clause
-                    for tipo1 in mio_piatto:
-                        counter += 1
-                        if tipo1 == richiesta_mercato[counter]:
-                            corrispondenza = counter
-                            if corrispondenza == 0:
-                                prezzo_finale += 10
-                            elif corrispondenza == 1:
-                                prezzo_finale += (percentuale(costo, marca[marca_chooser][1]))
-                            elif corrispondenza == 2:
-                                prezzo_finale += (percentuale(costo, condizione[condizione_chooser][1]))
-                        prezzo_finale = round(prezzo_finale, 2)
-                    vendi = input(
-                        Fore.MAGENTA + Back.BLACK + f"- Posso vendere il piatto a {prezzo_finale} euro, che faccio?" + Fore.YELLOW + Style.BRIGHT + Back.BLACK + " \nY = vendi, N = aspetta ").lower()
-                    if vendi == "y":
-                        soldi = round(soldi + prezzo_finale, 2)
-                        printslow(f"Ora hai {soldi} euro", 150, 'testo')
-                        x = finale_soldi(soldi)
-                        if x == 'a':
-                            return True
-                        timer += 0.5
-                        if timer % 2 == 0 and int(timer) >= 2:
-                            final = orologio()
-                            if final == 'a':
-                                another_shot = False
-                                keep_hustling = False
-                                keep_going = False
-                                return True
-                        printslow(f"Sono le {orologio()}.", 150, 'testo')
-                        another_shot = False
-                        ci_ricaschi = input(
-                            Fore.MAGENTA + Back.BLACK + "- Magari dò un'altra occhiatina!" + Fore.YELLOW + Style.BRIGHT + Back.BLACK + " Y o N: ").lower()
-                        if ci_ricaschi == "y":
-                            keep_hustling = True
-                        else:
-                            printslow("- Ok dai, per oggi basta.\n", 150, 'tommy')
-                            keep_hustling = False
-                    else:
-                        printslow("- Magari riprovo tra poco.\n", 150, 'tommy')
-                        printslow("*Mezz'ora dopo...*\n", 100, 'testo')
-                        timer += 0.5
-                        if timer % 2 == 0 and int(timer) >= 2:
-                            final = orologio()
-                            if final == 'a':
-                                another_shot = False
-                                keep_hustling = False
-                                keep_going = False
-                                return True
-                        final = orologio()
-                        if final == 'a':
-                            another_shot = False
-                            keep_hustling = False
-                            keep_going = False
-                            return True
-                        printslow(f"Sono le {orologio()}.", 150, 'testo')
-        else:
-            trillionaire_grindset = input(
-                Fore.MAGENTA + Back.BLACK + "- Beh, magari potrei cercare un altro bell'affare, ho bisogno di nuovi suoni..." + Fore.YELLOW + Back.BLACK + " Y o N: ").lower()
-            if trillionaire_grindset == "y":
-                keep_hustling = True
-            else:
-                printslow("- Ok, per ora basta, magari dò un'occhiata più tardi.", 180, 'tommy')
-                keep_hustling = False
-
-while not game_over:
-    timer = 0
-    forza = 0
-    soldi = 300
-    final = ''
-    glic_count = False
-    samuel_flag = True
-    agron_dialogue = True
-    agron_flag = True
-    cripi_flag = True
-    dialogo1_andrea = True
-    dead_andrea = False
-    party = []
-    dead_party = []
-    psi_cosa = ''
-    oggetti = []
-    game_over = False
-    continui = 'y'
-    while continui == 'y':
+while not GlVar.game_over:
+    GlVar.timer = 0
+    GlVar.forza = 0
+    GlVar.soldi = 300
+    GlVar.final = ''
+    GlVar.glic_count = False
+    GlVar.samuel_flag = True
+    GlVar.agron_dialogue = True
+    GlVar.agron_flag = True
+    GlVar.cripi_flag = True
+    GlVar.dialogo1_andrea = True
+    GlVar.dead_andrea = False
+    GlVar.party = []
+    GlVar.dead_party = []
+    GlVar.psi_cosa = ''
+    GlVar.oggetti = []
+    GlVar.game_over = False
+    GlVar.continui = 'y'
+    while GlVar.continui == 'y':
         salta_intro = input(Fore.YELLOW + Style.BRIGHT + Back.BLACK + "salta intro? 'y' o 'n': ").lower()
         if salta_intro == 'n':
           printslow(titolo1, 450, 'testo')
@@ -793,8 +64,8 @@ while not game_over:
         printslow(f"- Aaaaah, che bella dormita! \n- Cazzo ma sono le 8, ho un botto di tempo oggi! Quasi quasi...", 80, 'tommy')
         choice1 = input(Fore.YELLOW + Back.BLACK + "Type 'c' per fare colazione, type 'm' per masturbarti: ").lower()
         if choice1 == "m":
-            timer += 0.5
-            forza += 1
+            GlVar.timer += 0.5
+            GlVar.forza += 1
             printslow("- Quasi quasi mi sparo una sega!\nVediamo un po'...", 100, 'tommy')
             printslow("-Pornhub-", 80, 'testo')
             printslow("'Colate di sborra'", 80, 'testo')
@@ -819,8 +90,8 @@ while not game_over:
         printslow("Oggi compio 26 anni, forse è il momento di darci un taglio con questa merda.", 150, 'tommy')
         choice2 = input(Fore.YELLOW + Back.BLACK + "Type 'm' se vuoi comunque mangiare la merendina, \nType 's' se vuoi chiamare Samuel: ").lower()
         if choice2 == "s":
-          timer += 0.5
-          forza += 1
+          GlVar.timer += 0.5
+          GlVar.forza += 1
           printslow("- Sì, da oggi si cambia, mo chiamo Samuel e mi faccio consigliare una colazione sana.", 130, 'tommy')
           printslow("*il telefono s q u i l l a*", 80, 'testo')
           printslow("-      ", 30, 'samuel')
@@ -859,8 +130,8 @@ while not game_over:
         if offerte == 'y':
           s = compravendita()
           if s:
-              game_over = True
-              continui = 'n'
+              GlVar.game_over = True
+              GlVar.continui = 'n'
               continue
         else:
           printslow("- Magari dopo.\n", 150, 'tommy')
@@ -879,7 +150,7 @@ while not game_over:
                                                   "'C' se vuoi restare a casa: ").lower()
           ############# Giulio's route ###############
           if hub1 == 'g':
-            if timer >= 2 and fine_giulio == '0':
+            if GlVar.timer >= 2 and fine_giulio == '0':
               printslow("Giulio è già andato al lavoro.", 150, 'testo')
             else:
               if fine_giulio == '1':
@@ -890,7 +161,7 @@ while not game_over:
                 printslow("- Vediamo che fa il vecchio Givil.", 150, 'tommy')
                 siga = input(Fore.MAGENTA + Back.BLACK + "Mi porto le sigarette?" + Fore.YELLOW + Back.BLACK + " 'Y' o 'N': ").lower()
                 if siga == 'y':
-                  oggetti.append("sigarette")
+                  GlVar.oggetti.append("sigarette")
                 else:
                   printslow("- Facciamo senza, oggi mi sento frizzante!", 150, 'tommy')
                 printslow("Ti incammini verso casa di Giulio. \nLa giornata è così entusiasmante che ti metti a tamburellare in aria e ti fai i complimenti da solo per come stai tenendo il groove.\nSei carico a pallettoni. Dopo la terza air-rullata e la quindicesima roteazione cammellare della lingua, sei davanti casa di Giulio.", 150, 'testo')
@@ -911,19 +182,19 @@ while not game_over:
                   printslow("- Oh Bombo! auguri! Ma che ci fai qui a quest'ora? Mi stavo preparando per il lavoro.", 150, 'giulio')
                   printslow("- Ma niente, sono uscito e ho detto 'mo vado a rompere le palle a Givil'. Sei di fretta?", 150, 'tommy')
                   printslow("- Eh, mi sto preparando perché entro le dieci vorrei partire", 150, 'giulio')
-                if 'sigarette' in oggetti:
+                if 'sigarette' in GlVar.oggetti:
                   offri = input(Fore.MAGENTA + Back.BLACK + "Giulio è di fretta, magari si rilasserà se facciamo due chiacchiere con una sigaretta." + Fore.YELLOW + Back.BLACK + " \nOffri una sigaretta? 'Y' o 'N': ").lower()
                   if offri == 'y':
-                    timer += 0.5
-                    oggetti.remove('sigarette')
+                    GlVar.timer += 0.5
+                    GlVar.oggetti.remove('sigarette')
                     printslow("- Ci fumiamo una sigaretta?", 150, 'tommy')
-                    if timer % 2 == 0 and int(timer) >= 2:
-                        final = orologio()
-                        if final == 'a':
+                    if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                        GlVar.final = orologio()
+                        if GlVar.final == 'a':
                             part_end = True
                             collepaganello = False
-                            game_over = True
-                            continui = 'n'
+                            GlVar.game_over = True
+                            GlVar.continui = 'n'
                             continue
                     printslow(f"- No Tom, devo andare a lavoro. E poi porcoddio sono le {orologio()} e c’ho le madonne.", 150, 'giulio')
                     printslow("- Dai dio caro Givil, famoce na sigaretta alle panchine, due minuti e via!", 150, 'tommy')
@@ -952,10 +223,10 @@ while not game_over:
                         jamming = True
                         jamcounter = 0
                         while jamming:
-                          timer += 0.5
+                          GlVar.timer += 0.5
                           jamcounter += 1
-                          if forza >= 5:
-                            endings += 1
+                          if GlVar.forza >= 5:
+                            GlVar.endings += 1
                             printslow("Ti senti particolarmente carico. Giulio è con te, hai fatto una bella colazione, studi come un matto tutti i giorni\n"
                                       "e i piatti che hai sulla batteria sono quelli definitivi (per ora).\n"
                                       "Date queste circostanze, cominci a fare il cazzone, e oltre a rullare in maniere scriteriate, cominci a fare i trick con le bacchette,\n"
@@ -971,21 +242,21 @@ while not game_over:
                                       "                                            \n"
                                       "La ricorderanno come la tecnica dell'Elitch-cottero.\n"
                                       "\n"
-                                      f"Finale Jam forzuta - Hai sbloccato {endings} finali su 7!", 150, 'testo')
+                                      f"Finale Jam forzuta - Hai sbloccato {GlVar.endings} finali su 7!", 150, 'testo')
                             part_end = True
                             jamming = False
                             collepaganello = False
-                            game_over = True
-                            continui = 'n'
+                            GlVar.game_over = True
+                            GlVar.continui = 'n'
                             continue
                           elif jamcounter > 3:
-                            if timer % 2 == 0 and int(timer) >= 2:
-                                final = orologio()
-                                if final == 'a':
+                            if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                                GlVar.final = orologio()
+                                if GlVar.final == 'a':
                                   part_end = True
                                   collepaganello = False
-                                  game_over = True
-                                  continui = 'n'
+                                  GlVar.game_over = True
+                                  GlVar.continui = 'n'
                                   continue
                             printslow(f"- porcoddio Tommà sono le {orologio()}, è tardissimo. Devo andà.", 180, 'giulio')
                             printslow("Nooooooo, non puoi lasciare Giulio andarsene così! Decidi di sparare un'ultima potentissima rullata:\n"
@@ -994,32 +265,32 @@ while not game_over:
                                       "ti giri a controllare Giulio e noti che gli è esplosa la testa.", 150, 'testo')
                             time.sleep(1.0)
                             printslow("- Vabbè sono sicuro che se ne sarebbe voluto andare così, tra musica e amici. Bella Givil.", 150, 'tommy')
-                            dead_party.append('giulio')
+                            GlVar.dead_party.append('giulio')
                             s = finale_genocide(dead_party)
                             if s == 'a':
                                 part_end = True
                                 jamming = False
                                 collepaganello = False
-                                game_over = True
-                                continui = 'n'
+                                GlVar.game_over = True
+                                GlVar.continui = 'n'
                                 continue
                             printslow("Seppelisci il cadavere, o meglio i pezzetti, nel parcheggio del Colle, sperando che le coppiette che ci si vanno a infrattare\n"
                                       "vengano colpite dalla maledizione Giulio.", 150, 'testo')
-                            timer += 0.5
+                            GlVar.timer += 0.5
                             fine_giulio = '1'
                             jam_o_studio = 'l'
                             jamming = False
                           else:
                             jams = ["JAM INCAZZATISSIMAAAAAAAAAAAA \nSDREEEEENG CRSH CRSH SKRGNEEEEEE PZFFSFZPZPKZ", "J a m - M e g a - R e l a x\nDum dum duuummmm, chks chks chks ding, tatatapu-dummmm", "Jam psichedelica\npiropiropiro sleeeemb sleeeemb strakatum-ts, strakatum-tssss"]
                             printslow(f"Fate una {random.choice(jams)}\nForza + 1!\n", 80, 'testo')
-                            forza += 1
-                            if timer % 2 == 0 and int(timer) >= 2:
-                                final = orologio()
-                                if final == 'a':
+                            GlVar.forza += 1
+                            if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                                GlVar.final = orologio()
+                                if GlVar.final == 'a':
                                     part_end = True
                                     collepaganello = False
-                                    game_over = True
-                                    continui = 'n'
+                                    GlVar.game_over = True
+                                    GlVar.continui = 'n'
                                     continue
                             printslow(f"Sono le {orologio()}.", 150, 'testo')
                             ancora_jam = input(Fore.YELLOW + Back.BLACK + "Fate un'altra jam? 'Y' o 'N': ").lower()
@@ -1029,7 +300,7 @@ while not game_over:
                                 printslow("- Cazzo, m'ha proprio gustato jammare, ci voleva porcoddio!", 150, 'giulio')
                                 printslow("- Daje Givil, è stato SPAZIALE", 150, 'tommy')
                                 printslow("Giulio si è unito al party!", 80, 'testo')
-                                party.append('giulio')
+                                GlVar.party.append('giulio')
                                 fine_giulio = '2'
                               else:
                                 fine_giulio = '1'
@@ -1044,22 +315,22 @@ while not game_over:
                                   "con sistema a getto d'inchiostro a colori a modulo continuo ColorStream 8000?", 150, 'testo')
                         jam_o_studio = input(Fore.YELLOW + Back.BLACK + "Type 'B' per restare da nonno a suonare la batteria\nType 'C' per tornare a casa: ").lower()
                         while jam_o_studio == 'b':
-                          timer += 0.5
-                          forza += 1
+                          GlVar.timer += 0.5
+                          GlVar.forza += 1
                           printslow("Resti a suonare la batteria. Quanto cazzo sei bravo! Forza + 1!", 150, 'testo')
-                          if timer % 2 == 0 and int(timer) >= 2:
-                              final = orologio()
-                              if final == 'a':
+                          if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                              GlVar.final = orologio()
+                              if GlVar.final == 'a':
                                   part_end = True
                                   collepaganello = False
-                                  game_over = True
-                                  continui = 'n'
+                                  GlVar.game_over = True
+                                  GlVar.continui = 'n'
                                   continue
                           printslow(f"Sono le {orologio()}", 150, 'testo')
                           jam_o_studio = input(Fore.YELLOW + Back.BLACK + "Type 'B' per restare da nonno a suonare la batteria\n"
                                                                           "Type 'C' per tornare a casa: ").lower()
                     elif bivio_collepaganello == 'p':
-                      timer += 0.5
+                      GlVar.timer += 0.5
                       printslow("- Andamo ai monticelli Givil?", 150, 'tommy')
                       printslow("- Va bene, magari come dice Samuel mi fa bene fare movimento la mattina, madonna merendina!", 150, 'giulio')
                       printslow("Vi incamminate verso la spianata. \n"
@@ -1084,25 +355,25 @@ while not game_over:
                         printslow("Giulio rompe il silenzio con un 'porcoddio' sincerissimo, propone inoltre \n"
                                   "di tornare a casa perché siete zuppi di sudore e lui deve andare a lavorare.", 150, 'testo')
                         fine_giulio = '1'
-                        timer += 1
-                        if timer % 2 == 0 and int(timer) >= 2:
-                            final = orologio()
-                            if final == 'a':
+                        GlVar.timer += 1
+                        if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                            GlVar.final = orologio()
+                            if GlVar.final == 'a':
                                 part_end = True
                                 collepaganello = False
-                                game_over = True
-                                continui = 'n'
+                                GlVar.game_over = True
+                                GlVar.continui = 'n'
                                 continue
                         printslow(f"Sono le {orologio()}", 150, 'testo')
                       elif bivio_spianata == 'p':
-                        timer += 0.5
-                        if timer % 2 == 0 and int(timer) >= 2:
-                            final = orologio()
-                            if final == 'a':
+                        GlVar.timer += 0.5
+                        if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                            GlVar.final = orologio()
+                            if GlVar.final == 'a':
                                 part_end = True
                                 collepaganello = False
-                                game_over = True
-                                continui = 'n'
+                                GlVar.game_over = True
+                                GlVar.continui = 'n'
                                 continue
                         printslow(f"Sono le {orologio()}", 150, 'testo')
                         printslow("Vi incamminate per il dedalo di stradine che portano alla panchina panoramica, sede incontrastata di:\n"
@@ -1116,7 +387,7 @@ while not game_over:
                                   "Tu e Giulio vi fate cauti, cosa potrebbe essere?", 150, 'testo')
                         soldi_o_panca = input(Fore.YELLOW + Back.BLACK + "Type 'S' se vuoi avvicinarti al rumore,\nType 'P' per proseguire: ").lower()
                         if soldi_o_panca == 's':
-                          timer += 0.5
+                          GlVar.timer += 0.5
                           printslow("- Damo un'occhiata Givil, magari è uno scoiattolo.", 120, 'tommy')
                           printslow("- Sì Tommà, lo scoiattolo degli appennini. Tornamo indietro, che è un cinghiale!", 150, 'giulio')
                           printslow("Sei intimorito ma anche eccitato, come quando ti sei portato a casa le mutandine di quella ragazza.\n"
@@ -1130,28 +401,28 @@ while not game_over:
                                     "Tarek fuma contento e se ne va.", 150, 'testo')
                           printslow("- ahahahah ma che cazzo è successo", 150, 'tommy')
                           printslow("- Non lo so Bombo, però per un attimo me so cagato addosso ahah", 150, 'giulio')
-                          if timer % 2 == 0 and int(timer) >= 2:
-                              final = orologio()
-                              if final == 'a':
+                          if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                              GlVar.final = orologio()
+                              if GlVar.final == 'a':
                                   part_end = True
                                   collepaganello = False
-                                  game_over = True
-                                  continui = 'n'
+                                  GlVar.game_over = True
+                                  GlVar.continui = 'n'
                                   continue
                           printslow(f"Sono le {orologio()}", 150, 'testo')
                           printslow("Dopo questa esperienza, tu e Giulio vi sentite legati per la vita. Giulio si unisce al party!", 150, 'testo')
-                          party.append('giulio')
+                          GlVar.party.append('giulio')
                           fine_giulio = '2'
                           time.sleep(1.0)
                           printslow("Passando vicino al cespuglio di Tarek, notate che gli è caduto il portafogli.\n"
                                     "Dentro ci sono 200 euro.", 150, 'testo')
-                          soldi += 200
-                          s = finale_soldi(soldi)
+                          GlVar.soldi += 200
+                          s = finale_soldi(GlVar.soldi)
                           if s == 'a':
                               Part_end = True
                               collepaganello = False
-                              game_over = True
-                              continui = 'n'
+                              GlVar.game_over = True
+                              GlVar.continui = 'n'
                               continue
                           printslow("- Questi sono per le 14000 sigarette che mi ha scroccato, porcoddio", 180, 'tommy')
                           printslow("Pensi, mentre intaschi il maltolto.", 150, 'testo')
@@ -1162,11 +433,11 @@ while not game_over:
                               if s:
                                   part_end = True
                                   collepaganello = False
-                                  game_over = True
-                                  continui = 'n'
+                                  GlVar.game_over = True
+                                  GlVar.continui = 'n'
                                   continue
                           printslow("Dopo questa scarica di adrenalina, decidete di tornare a Collepaganello.", 150, 'testo')
-                          timer += 0.5
+                          GlVar.timer += 0.5
                         else:
                           printslow("Decidete di non indagare oltre e andate verso la panchina.\n"
                                     "Sei intimorito ma anche eccitato, come quando ti sei portato a casa le mutandine di quella ragazza.\n"
@@ -1186,18 +457,18 @@ while not game_over:
                           printslow("- Quelle erano rispettivamente Groove e Armonia: il musicista vero è colui che fa dei threesome con loro.", 150, 'tommy')
                           printslow(".........", 30, 'testo')
                           printslow("- Tommy sei un coglione.", 150, 'giulio')
-                          timer += 0.5
-                          party.append('giulio')
+                          GlVar.timer += 0.5
+                          GlVar.party.append('giulio')
                           fine_giulio = '2'
                           printslow("Dopo questa bonding experience, Giulio si unisce al party! \n"
                                     "decidete di tornare a Collepaganello.", 150, 'testo')
-                          if timer % 2 == 0 and int(timer) >= 2:
-                              final = orologio()
-                              if final == 'a':
+                          if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                              GlVar.final = orologio()
+                              if GlVar.final == 'a':
                                   part_end = True
                                   collepaganello = False
-                                  game_over = True
-                                  continui = 'n'
+                                  GlVar.game_over = True
+                                  GlVar.continui = 'n'
                                   continue
                           printslow(f"Sono le {orologio()}", 150, 'testo')
                       else:
@@ -1210,14 +481,14 @@ while not game_over:
                         printslow("Vi incamminate. Giulio non è convinto della scelta ma ti segue.", 150, 'testo')
                         printslow("- Mannaggia a quel tamarro del papa, ma perché t’ho dato retta!", 150, 'giulio')
                         time.sleep(1.5)
-                        timer += 2
-                        if timer % 2 == 0 and int(timer) >= 2:
-                            final = orologio()
-                            if final == 'a':
+                        GlVar.timer += 2
+                        if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                            GlVar.final = orologio()
+                            if GlVar.final == 'a':
                                 part_end = True
                                 collepaganello = False
-                                game_over = True
-                                continui = 'n'
+                                GlVar.game_over = True
+                                GlVar.continui = 'n'
                                 continue
                         printslow(f"Sono le {orologio()}", 150, 'testo')
                         printslow("Arrivati all'eremo, un potente rombo ti trapana i timpani, seguito da una voce solenne che declama:\n"
@@ -1225,16 +496,16 @@ while not game_over:
                                   "'O tu, che la montagna aspra temi,'\n"
                                   "'O tu, dai livelli glicemici osceni,'\n"
                                   "'Dimmi, qual è la cosa che preferisci o a cui aneli?", 100, 'testo')
-                        psi_cosa = str("PSI " + input(Fore.YELLOW + Back.BLACK + "Scrivi la cosa che più ti piace o desideri: ")).title()
+                        GlVar.psi_cosa = str("PSI " + input(Fore.YELLOW + Back.BLACK + "Scrivi la cosa che più ti piace o desideri: ")).title()
                         printslow("'E sia, che il potere di evocare il tuo più profondo desiderio ti sia concesso'", 150, 'testo')
-                        printslow(f"Hai appreso {psi_cosa}!", 80, 'testo')
-                        oggetti.append(psi_cosa)
+                        printslow(f"Hai appreso {GlVar.psi_cosa}!", 80, 'testo')
+                        GlVar.oggetti.append(GlVar.psi_cosa)
                         printslow("\n- Giù, non ti immagini che cazzo m'è appena successo...", 80, 'tommy')
                         printslow("- Ti sei pisciato sulle scarpe Tommà", 150, 'giulio')
                         printslow("Ti guardi i piedi. Hai le scarpe fradice.", 150, 'testo')
                         printslow("- Porca madonna.", 150, 'tommy')
                         printslow("- Tornamo a casa va', tanto ormai la giornata di lavoro è andata a schifìo.", 150, 'giulio')
-                        party.append('giulio')
+                        GlVar.party.append('giulio')
                         fine_giulio = '2'
                         printslow("Ti sei pisciato sulle scarpe, ma Giulio si è unito al party!", 200, 'testo')
                         printslow(f"Tornate a Collepaganello.", 150, 'testo')
@@ -1253,17 +524,17 @@ while not game_over:
                       "Nel pieno dell'estasi, non ti sei reso nemmeno conto di essere arrivato.", 150, 'testo')
             printslow("Al lavoro!", 150, 'tommy')
             while jam_o_studio == 'b':
-              timer += 0.5
-              forza += 1
+              GlVar.timer += 0.5
+              GlVar.forza += 1
               printslow("Ti metti a suonare la batteria. Quanto cazzo sei bravo! Forza + 1!", 150, 'testo')
-              if timer % 2 == 0 and int(timer) >= 2:
-                  final = orologio()
-                  if final == 'a':
+              if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                  GlVar.final = orologio()
+                  if GlVar.final == 'a':
                       jam_o_studio = False
                       part_end = True
                       collepaganello = False
-                      game_over = True
-                      continui = 'n'
+                      GlVar.game_over = True
+                      GlVar.continui = 'n'
                       continue
               printslow(f"Sono le {orologio()}.", 150, 'testo')
               jam_o_studio = input(Fore.YELLOW + Back.BLACK + "Type 'B' per restare da nonno a suonare la batteria\nType 'C' per tornare a casa: ").lower()
@@ -1274,8 +545,8 @@ while not game_over:
                                                          "Type 'S' per giocare alla switch,\n"
                                                          "Type 'E' per uscire: ").lower()
             if cose_casa == 'm':
-              if 'mutandine' in oggetti:
-                oggetti.remove('mutandine')
+              if 'mutandine' in GlVar.oggetti:
+                GlVar.oggetti.remove('mutandine')
               printslow("E via col nostro caro vizietto. Sali in camera.", 150, 'testo')
               time.sleep(1.0)
               printslow("Ritrovi in un cassetto delle mutandine.\n"
@@ -1283,25 +554,25 @@ while not game_over:
               time.sleep(2.0)
               printslow("Sborri in due secondi netti.", 150, 'testo')
               printslow("U O O O O O O O O O O O R G H H G G H G H", 30, 'tommy')
-              forza += 1
-              timer += 0.5
+              GlVar.forza += 1
+              GlVar.timer += 0.5
               printslow("Ti riprendi dopo un riposino aftersex.", 150, 'testo')
-              if timer % 2 == 0 and int(timer) >= 2:
-                  final = orologio()
-                  if final == 'a':
+              if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                  GlVar.final = orologio()
+                  if GlVar.final == 'a':
                       part_end = True
                       collepaganello = False
-                      game_over = True
-                      continui = 'n'
+                      GlVar.game_over = True
+                      GlVar.continui = 'n'
                       continue
               printslow(f"Sono le {orologio()}", 150, 'testo')
-              oggetti.append('mutandine')
+              GlVar.oggetti.append('mutandine')
             elif cose_casa == 's':
-              if 'occhiali' not in oggetti:
+              if 'occhiali' not in GlVar.oggetti:
                 printslow("Ti avvicini lussurioso alla Switch. Sul mobiletto all'ingresso, noti un paio di occhiale da sole funky.", 150, 'testo')
                 occhiali = input(Fore.YELLOW + Back.BLACK + "Provi gli occhiali? 'Y' o 'N': ").lower()
                 if occhiali == 'y':
-                  oggetti.append('occhiali')
+                  GlVar.oggetti.append('occhiali')
                   printslow("Afferri gli occhiali.", 150, 'testo')
                   printslow("- woo, che figo!", 150, 'tommy')
                   printslow("Ti spari un doppio gesto della pistola allo specchio, fai due pose e ti riavvicini alla switch.", 150, 'testo')
@@ -1312,14 +583,14 @@ while not game_over:
                             "Che bomba di giornata.\n", 150, 'testo')
                 else:
                   printslow("- Tempo di grindare emozioni.", 150, 'tommy')
-                  timer += 2
-                  if timer % 2 == 0 and int(timer) >= 2:
-                      final = orologio()
-                      if final == 'a':
+                  GlVar.timer += 2
+                  if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                      GlVar.final = orologio()
+                      if GlVar.final == 'a':
                           part_end = True
                           collepaganello = False
-                          game_over = True
-                          continui = 'n'
+                          GlVar.game_over = True
+                          GlVar.continui = 'n'
                           continue
                   printslow("Il vortice di feels dei tuoi giochi preferiti (Celeste, Undertale, My Little Pony Friendship is Magic)\n"
                                 "ti inebria e ti porta in una dimensione magica, morbida, familiare.\n"
@@ -1338,8 +609,8 @@ while not game_over:
                 if s:
                   part_end = True
                   collepaganello = False
-                  game_over = True
-                  continui = 'n'
+                  GlVar.game_over = True
+                  GlVar.continui = 'n'
                   continue
               else:
                 printslow("- Magari dopo.\n", 150, 'tommy')
@@ -1365,14 +636,14 @@ while not game_over:
                                                 "Type 'B' se vuoi andare al Borgo: ").lower()
         while Fabriano:
           if hub2 == 's':
-            if samuel_flag:
+            if GlVar.samuel_flag:
               printslow("Vai verso San Giuseppe. \nC'è poco da fare: il Piano è il quartiere migliore di Fabriano.", 150, 'testo')
               printslow("- Se Sergio fosse di Fabriano, vivrebbe qui in quanto tra le persone migliori che conosco.", 150, 'tommy')
               time.sleep(0.5)
               printslow("Arrivi sotto casa di Samuel. Negli ultimi mesi è diventato ancora più elettronico, chissà se parlerà in codice binario ormai?", 150, 'testo')
               estathe = input(Fore.YELLOW + Back.BLACK + "Noti un estathè incastrato tra i sedili, vuoi prenderlo? 'Y' o 'N': ").lower()
               if estathe == 'y':
-                oggetti.append("estathe")
+                GlVar.oggetti.append("estathe")
                 printslow("- Wow, ma c'è ancora del liquido!", 150, 'tommy')
                 printslow("Suggi l'estathè come se fosse della manna. Era scaduto e aperto da 3 mesi. Spaziale!\n"
                           "Suoni il campanello. Samuel risponde subito:", 150, 'testo')
@@ -1423,11 +694,11 @@ while not game_over:
                 printslow("Non fai in tempo a rispondere: Samuel infila l'adattatore e sparisce in un lampo elettronico.", 150, 'testo')
                 time.sleep(0.5)
                 printslow("Subito dopo, il synth comincia a mandare segnali video. Sembra ti stia invitando a giocare.", 150, 'testo')
-                timer += 0.5
-                r = RPG(forza)
+                GlVar.timer += 0.5
+                r = RPG(GlVar.forza)
                 if r:
-                    game_over = True
-                    continui = 'n'
+                    GlVar.game_over = True
+                    GlVar.continui = 'n'
                     Fabriano = False
                     continue
               else:
@@ -1480,18 +751,18 @@ while not game_over:
                 printslow("Ti alzi barcollando ed esci da casa di Samuel. Sei totalmente rincoglionito.\n"
                           "Appena entri in macchina, ti addormenti di colpo.", 150, 'testo')
                 time.sleep(2.0)
-                timer += 2
+                GlVar.timer += 2
                 printslow(f"Apri gli occhi. Sono le {orologio()}.", 150, 'testo')
                 printslow("- Merda.", 150, 'tommy')
-                samuel_flag = False
+                GlVar.samuel_flag = False
             else:
               printslow("- Che torno a fare?", 150, 'tommy')
-            if timer % 2 == 0 and int(timer) >= 2:
-                final = orologio()
-                if final == 'a':
+            if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                GlVar.final = orologio()
+                if GlVar.final == 'a':
                     Fabriano = False
-                    game_over = True
-                    continui = 'n'
+                    GlVar.game_over = True
+                    GlVar.continui = 'n'
                     continue
             printslow(f"Sei sotto casa di Samuel, sono le {orologio()}. Dove vuoi andare?", 150, 'testo')
             hub2 = input(Fore.YELLOW + Back.BLACK + "Type 'C' se vuoi andare in centro, \n"
@@ -1512,22 +783,22 @@ while not game_over:
                                                                       "(B) Bounty:   100€\n"
                                                                       "Scrivi l'iniziale di ciò che vuoi comprare: ").lower()
                     if acquisto_snack == 'e':
-                        if soldi < 50:
+                        if GlVar.soldi < 50:
                             printslow("Non te lo puoi permettere, stronzo.\n", 200, 'testo')
                         else:
-                            timer += 0.5
-                            soldi -= 50
-                            oggetti.append('estathe')
-                            printslow(f"Hai comprato un estathè, Sei rimasto con {soldi}€.\n"
+                            GlVar.timer += 0.5
+                            GlVar.soldi -= 50
+                            GlVar.oggetti.append('estathe')
+                            printslow(f"Hai comprato un estathè, Sei rimasto con {GlVar.soldi}€.\n"
                                       f"La macchinetta segna le {orologio()}.", 200, 'testo')
                     elif acquisto_snack == 's' or acquisto_snack == 'b':
-                        if soldi < 100:
+                        if GlVar.soldi < 100:
                             printslow("Non te lo puoi permettere, stronzo.\n", 200, 'testo')
                         else:
-                            timer += 0.5
-                            soldi -= 100
-                            oggetti.append('merendina')
-                            printslow(f"Hai comprato una fonte esagerata di zuccheri. Sei rimasto con {soldi}€.\n"
+                            GlVar.timer += 0.5
+                            GlVar.soldi -= 100
+                            GlVar.oggetti.append('merendina')
+                            printslow(f"Hai comprato una fonte esagerata di zuccheri. Sei rimasto con {GlVar.soldi}€.\n"
                                       f"La macchinetta segna le {orologio()}.", 200, 'testo')
                     macchinetta = input(Fore.YELLOW + Back.BLACK + "Vuoi continuare a fare acquisti? 'Y' o 'N': ").lower()
             else:
@@ -1537,8 +808,8 @@ while not game_over:
                     s = compravendita()
                     if s:
                         Fabriano = False
-                        game_over = True
-                        continui = 'n'
+                        GlVar.game_over = True
+                        GlVar.continui = 'n'
                         continue
             printslow("Ti allontani dolorosamente dal dispensatore di gioia e saccarosio.", 150, 'testo')
             bivio_centro = input(Fore.YELLOW + Back.BLACK + "Type 'M' per andare al Bar Mario,\n"
@@ -1549,11 +820,11 @@ while not game_over:
                           "Il chiacchiericcio e il biascichìo dei vari tossici e alcolisti che ronzano intorno al bar ti stordisce, \n"
                           "la voce a trombetta di Tommy Fogna ti provoca un'irrefrenabile voglia di buttarlo in un pogo dei Meshuggah, \n"
                           "mentre le risate di Claudio ti fanno venire da piangere. La tristezza di queste esistenze ti abbatte.", 150, 'testo')
-                if timer >= 6 and cripi_flag:
-                    cripi_flag = False
+                if GlVar.timer >= 6 and GlVar.cripi_flag:
+                    GlVar.cripi_flag = False
                     printslow("Tra le nuove leve del Bar Mario c'è Cripi, che attacca a bere alle 14:00. Oggi è particolarmente unto,\n"
                               "e il sole gli riflette addosso.", 150, 'testo')
-                    if 'occhiali' in oggetti:
+                    if 'occhiali' in GlVar.oggetti:
                         printslow("Per ovviare al problema, ti metti gli occhiali e ti avvicini baldanzoso. Non riuscendo a sfruttare\n"
                                   "l'effetto sorpresa del riflesso, Cripi non è abbastanza rapido nell'allungarti una mano sul culo.\n"
                                   "In tutta risposta, prendendolo in contropiede, riesci a toccargli il culo tu, umiliandolo profondamente.", 150, 'testo')
@@ -1570,27 +841,27 @@ while not game_over:
                                   "Stai andando nel panico, sudi e iperventili. In un ultimo sforzo disperato, tiri via la mano e senti uno strappo:\n"
                                   "hai letteralmente portato via un pezzo dei pantaloni di Cripi, che ora ha una chiappa all'aria.", 150, 'testo')
                         time.sleep(1.5)
-                        timer += 0.5
-                        oggetti.append('pergamena')
+                        GlVar.timer += 0.5
+                        GlVar.oggetti.append('pergamena')
                         printslow("Ti infili al bagno del Bar Mario per lavare via la pezza che ti ritrovi in mano. Piangi lacrime amare, e tu odi\n"
                                   "l'amaro. Al terzo strato di sudiciume che togli, noti che oltre ai pantaloni hai qualcos'altro in mano:\n"
                                   "sembrerebbe la carta d'identità di Diego.", 150, 'testo')
                         printslow("- Ma che cazzo...", 100, 'tommy')
-                        if timer % 2 == 0 and int(timer) >= 2:
-                            final = orologio()
-                            if final == 'a':
+                        if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                            GlVar.final = orologio()
+                            if GlVar.final == 'a':
                                 Fabriano = False
-                                game_over = True
-                                continui = 'n'
+                                GlVar.game_over = True
+                                GlVar.continui = 'n'
                                 continue
                         printslow("Il documento è illeggibile: è ricoperto da capo a piedi da numeri e nomi di ragazze. Sembrerebbe che Cripi\n"
                                   "abbia utilizzato la carta d'identità come una sorta di pergamena su cui scrivere i suoi appunti.\n"
                                   "Decidi di tenerla, magari tra quei numeri c'è qualche baldracca buona.\n"
                                   f"Esci dal bagno. Sono le {orologio()}.", 150, 'testo')
-                    elif psi_cosa in oggetti:
+                    elif GlVar.psi_cosa in GlVar.oggetti:
                         printslow("Non te la senti di affrontare Cripi e le sue manate sul culo. Appena si gira verso di te,\n"
                                   "chiami il potere di San Silvestro:\n", 150, 'testo')
-                        printslow(f"- {psi_cosa}!", 200, 'tommy')
+                        printslow(f"- {GlVar.psi_cosa}!", 200, 'tommy')
                         printslow("Urli, e il potere risuona in te: \n"
                                   "dalle mani, una concrezione di sborra e zucchero si cristallizza, andando a scagliarsi contro tutti i presenti al Bar Mario.\n"
                                   "                                                          \n"
@@ -1602,13 +873,13 @@ while not game_over:
                         printslow("Il documento è illeggibile: è ricoperto da capo a piedi da numeri e nomi di ragazze. Sembrerebbe che Cripi\n"
                                   "abbia utilizzato la carta d'identità come una sorta di pergamena su cui scrivere i suoi appunti.\n"
                                   "Decidi di tenerla, magari tra quei numeri c'è qualche baldracca buona.", 150, 'testo')
-                        timer += 0.5
-                        oggetti.append('pergamena')
+                        GlVar.timer += 0.5
+                        GlVar.oggetti.append('pergamena')
                     else:
                         printslow("Accecato dal riverbero, ti avvicini a guardia abbassata. Cripi ti nota e ti si fionda contro.\n"
                                   "Vuole cercare di prenderti il culo. Fai uno scatto all'ultimo mentre ti monta il terrore.", 150, 'tommy')
                         attacco_culo = random.randint(0, 100)
-                        if attacco_culo > 10+(forza*10):
+                        if attacco_culo > 10+(GlVar.forza*10):
                             printslow("- Nooooooooooooo!", 100, 'tommy')
                             printslow("Urli, mentre Cripi stringe la presa sulle tua chiappe di marshmallow.\n"
                                       "Sei umiliato, ti senti sporco e ti viene da piangere.\n"
@@ -1616,8 +887,8 @@ while not game_over:
                                       "Mentre la vista ti si offusca, dedichi un ultimo messaggio mentale al mondo:", 150, 'testo')
                             printslow("- Vorrei... C-Chiavare... Mi-Mi-Misato...", 30, 'tommy')
                             printslow("Chiudi gli occhi. Sei stato sconfitto. Game over.", 150, 'testo')
-                            game_over = True
-                            continui = 'n'
+                            GlVar.game_over = True
+                            GlVar.continui = 'n'
                             Fabriano = False
                             continue
                         else:
@@ -1630,7 +901,7 @@ while not game_over:
                                       "Decidi di tenerla, magari tra quei numeri c'è qualche baldracca buona.", 150, 'testo')
                             printslow("- Bella Die, vado a spararmi una bevuta", 200, 'tommy')
                             printslow("Dici velocemente, appropinquandoti al bar. Ti sei salvato, brutto furbone.", 150, 'testo')
-                            oggetti.append('pergamena')
+                            GlVar.oggetti.append('pergamena')
                 printslow("Entri dentro cercando di non farti vedere. Pare abbia funzionato.", 150, 'testo')
                 macchinetta = 'y'
                 while macchinetta == 'y':
@@ -1640,41 +911,41 @@ while not game_over:
                                                                       "(N) Niente\n"
                                                                       "Scrivi l'iniziale di ciò che vuoi comprare: ").lower()
                     if acquisto_snack == 'v':
-                        if soldi < 300:
+                        if GlVar.soldi < 300:
                             printslow("Non te lo puoi permettere, stronzo.\n", 200, 'testo')
                         else:
-                            timer += 0.5
-                            soldi -= 300
-                            oggetti.append('vodka')
-                            if timer % 2 == 0 and int(timer) >= 2:
-                                final = orologio()
-                                if final == 'a':
+                            GlVar.timer += 0.5
+                            GlVar.soldi -= 300
+                            GlVar.oggetti.append('vodka')
+                            if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                                GlVar.final = orologio()
+                                if GlVar.final == 'a':
                                     macchinetta = 'False'
                                     Fabriano = False
-                                    game_over = True
-                                    continui = 'n'
+                                    GlVar.game_over = True
+                                    GlVar.continui = 'n'
                                     continue
-                            printslow(f"Hai comprato una vodka, Sei rimasto con {soldi}€.\n"
+                            printslow(f"Hai comprato una vodka, Sei rimasto con {GlVar.soldi}€.\n"
                                           f"L'orologio segna le {orologio()}.", 200, 'testo')
                     elif acquisto_snack == 'e':
-                        if soldi < 100:
+                        if GlVar.soldi < 100:
                             printslow("Non te lo puoi permettere, stronzo.\n", 200, 'testo')
                         else:
-                            timer += 0.5
-                            soldi -= 100
-                            oggetti.append('estathe')
-                            printslow(f"Hai comprato un estathè, Sei rimasto con {soldi}€.\n"
+                            GlVar.timer += 0.5
+                            GlVar.soldi -= 100
+                            GlVar.oggetti.append('estathe')
+                            printslow(f"Hai comprato un estathè, Sei rimasto con {GlVar.soldi}€.\n"
                                       f"L'orologio segna le {orologio()}.", 200, 'testo')
                     macchinetta = input(Fore.YELLOW + Back.BLACK + "Vuoi continuare a fare acquisti? 'Y' o 'N': ").lower()
                 printslow("Sembra che non ci sia nient'altro da fare, qua. Torni alla macchina.", 150, 'testo')
-                timer += 0.5
-                if timer % 2 == 0 and int(timer) >= 2:
-                    final = orologio()
-                    if final == 'a':
+                GlVar.timer += 0.5
+                if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                    GlVar.final = orologio()
+                    if GlVar.final == 'a':
                         macchinetta = 'False'
                         Fabriano = False
-                        game_over = True
-                        continui = 'n'
+                        GlVar.game_over = True
+                        GlVar.continui = 'n'
                         continue
                 printslow(f"Sono le {orologio()}", 150, 'testo')
             else:
@@ -1682,8 +953,8 @@ while not game_over:
                           "Ti affascina sempre la zona di San Venanzio, a lei sono legati ricordi dolceamari.\n"
                           "scendi in piazza.", 150, 'testo')
                 printslow("- Ah ma oggi è martedì, il Public è chiuso. So' un coglione.", 150, 'tommy')
-                if forza >= 5 and 'andrea' in party and timer >= 10:
-                    endings += 1
+                if GlVar.forza >= 5 and 'andrea' in GlVar.party and GlVar.timer >= 10:
+                    GlVar.endings += 1
                     printslow("- No te preocupes, amigo, tengo les chiavis", 150, 'andrea')
                     printslow("Andrea schiava il portone e ti invita per un drink.", 150, 'testo')
                     printslow("- Bomba! mi prepari un drink spaziale? Posso vedere il menù?", 150, 'tommy')
@@ -1741,20 +1012,20 @@ while not game_over:
                               "\n"
                               ";)\n"
                               "\n"
-                              f"Finale Albero delle Sbronze - Hai scoperto un finale! Ora sei a {endings} su 7!", 150, 'testo')
-                    game_over = True
-                    continui = 'n'
+                              f"Finale Albero delle Sbronze - Hai scoperto un finale! Ora sei a {GlVar.endings} su 7!", 150, 'testo')
+                    GlVar.game_over = True
+                    GlVar.continui = 'n'
                     Fabriano = False
                     continue
 
                 printslow("Torni in macchina incazzato. Un'ora buttata.", 150, 'testo')
-                timer += 1
-                if timer % 2 == 0 and int(timer) >= 2:
-                    final = orologio()
-                    if final == 'a':
+                GlVar.timer += 1
+                if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                    GlVar.final = orologio()
+                    if GlVar.final == 'a':
                         Fabriano = False
-                        game_over = True
-                        continui = 'n'
+                        GlVar.game_over = True
+                        GlVar.continui = 'n'
                         continue
                 printslow(f"Sono le {orologio()}", 150, 'testo')
 
@@ -1779,28 +1050,28 @@ while not game_over:
                       acquisto_snack = input(Fore.YELLOW + Back.BLACK + "Vuoi comprare uno Scrofix? Costa 150€. 'Y' o 'N': ").lower()
                       while macchinetta:
                           if acquisto_snack == 'y':
-                              if soldi < 150:
+                              if GlVar.soldi < 150:
                                   printslow("Il dottore ti guarda male. \n'- Non te lo puoi permettere, stronzo.'", 200, 'testo')
                                   macchinetta = False
                               else:
-                                  soldi -= 150
-                                  oggetti.append('merendina_rara')
-                                  printslow(f"Hai comprato uno Scrofix, Sei rimasto con {soldi}€.", 150, 'testo')
+                                  GlVar.soldi -= 150
+                                  GlVar.oggetti.append('merendina_rara')
+                                  printslow(f"Hai comprato uno Scrofix, Sei rimasto con {GlVar.soldi}€.", 150, 'testo')
                                   acquisto_snack = input(Fore.YELLOW + Back.BLACK + "Vuoi comprarne un'altro? 'Y' o 'N': ").lower()
                           elif acquisto_snack != 'y':
                               macchinetta = False
                   elif piazzale == 'm':
                       s = compravendita()
                       if s:
-                          game_over = True
-                          continui = 'n'
+                          GlVar.game_over = True
+                          GlVar.continui = 'n'
                           hub_piazzale = False
                           Fabriano = False
                           continue
                   elif piazzale == 'a':
                       printslow("Decidi di suonare a casa di Agron.", 150, 'testo')
                       printslow("BZZZZZZZZZZZZ", 60, 'testo')
-                      if timer >= 10 and agron_flag:
+                      if GlVar.timer >= 10 and GlVar.agron_flag:
                           # Agron route
                           printslow("Raggiungi Agron sotto casa alle 18 come concordato, ovviamente non è sceso, decidi di chiamarlo:", 150, 'testo')
                           printslow("- Oh Ag, sto qui sotto, scendi?", 150, 'tommy')
@@ -1826,20 +1097,20 @@ while not game_over:
                           printslow("- Si aspetta un attimo, senti qui sto passaggio che faccio!", 150, 'tommy')
                           infierisci = input(Fore.YELLOW + Back.BLACK + "Vuoi infierire facendogli ascoltare un'altra rullata? 'Y' o 'N': ").lower()
                           if infierisci == 'y':
-                              agron_flag = False
-                              timer += 0.5
+                              GlVar.agron_flag = False
+                              GlVar.timer += 0.5
                               printslow("Fai ascoltare il passaggio che ti carica, ma ovviamente non ti puoi fermare lì.\n"
                                         "Parti con una megarullata che mischia 3/4, 5/8 e 11/16: inascoltabile, letteralmente una tortura di Guantanamo.\n"
                                         "Agron ti guarda, lo vedi male, sta impallidendo. Cerchi di caricarlo facendo dei gesti ritmici con la mano, ma è troppo tardi:\n"
                                         "Agron spalanca la portiera, vomita e infine torna a casa.", 150, 'testo')
                               time.sleep(1.0)
-                              if timer % 2 == 0 and int(timer) >= 2:
-                                  final = orologio()
-                                  if final == 'a':
+                              if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                                  GlVar.final = orologio()
+                                  if GlVar.final == 'a':
                                       Fabriano = False
                                       hub_piazzale = False
-                                      game_over = True
-                                      continui = 'n'
+                                      GlVar.game_over = True
+                                      GlVar.continui = 'n'
                                       continue
                               printslow(f"Sono le {orologio()}", 150, 'testo')
                           else:
@@ -2019,56 +1290,56 @@ while not game_over:
                                             "Vi sciacquate subito dalle palle.", 150, 'testo')
                                   printslow("- MA PORCODDIO! ANDAMO VIA DIO CANE!", 200, 'tommy')
                               if triste > carica:
-                                  timer += 0.5
-                                  agron_flag = False
+                                  GlVar.timer += 0.5
+                                  GlVar.agron_flag = False
                                   printslow("Dopo aver scelto canzoni tristi e essere andato nei peggiori bar di fabriano, Agron è malinconico e tu ti sei rovinato il compleanno. Riporti a casa il tuo amico colorato.\n"
                                             "Appena uscito dalla macchina, la iella delle canzoni che hai scelto lo fa investire da tre macchine di fila.\n"
                                             "Guardi ciò che rimane di Agron (ovvero una striscia rosso-bruna lunga tutto Piazzale Matteotti) e sospiri: ", 150, 'testo')
                                   printslow("- Vabbè sono sicuro che se ne sarebbe voluto andare così, tra musica triste e amici. Ciao Ag.", 150, 'tommy')
-                                  if timer % 2 == 0 and int(timer) >= 2:
-                                      final = orologio()
-                                      if final == 'a':
+                                  if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                                      GlVar.final = orologio()
+                                      if GlVar.final == 'a':
                                           Fabriano = False
                                           hub_piazzale = False
-                                          game_over = True
-                                          continui = 'n'
+                                          GlVar.game_over = True
+                                          GlVar.continui = 'n'
                                           continue
                                   printslow(f"Sono le {orologio()}", 150, 'testo')
-                                  dead_party.append('agron')
-                                  s = finale_genocide(dead_party)
+                                  GlVar.dead_party.append('agron')
+                                  s = finale_genocide(GlVar.dead_party)
                                   if s == 'a':
-                                      game_over = True
-                                      continui = 'n'
+                                      GlVar.game_over = True
+                                      GlVar.continui = 'n'
                                       hub_piazzale = False
                                       Fabriano = False
                                       continue
                               else:
-                                  agron_flag = False
+                                  GlVar.agron_flag = False
                                   printslow("Cazzo che bomba di serata! La musica è stata fighissima e già siete mezzi brilli.\n"
                                             "Carichissimo, ti prepari: il party sta per iniziare!\n"
                                             "                                             \n"
                                             "Agron si unisce al party!", 150, 'testo')
-                                  party.append('agron')
-                                  timer += 0.5
-                                  if timer % 2 == 0 and int(timer) >= 2:
-                                      final = orologio()
-                                      if final == 'a':
+                                  GlVar.party.append('agron')
+                                  GlVar.timer += 0.5
+                                  if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                                      GlVar.final = orologio()
+                                      if GlVar.final == 'a':
                                           Fabriano = False
                                           hub_piazzale = False
-                                          game_over = True
-                                          continui = 'n'
+                                          GlVar.game_over = True
+                                          GlVar.continui = 'n'
                                           continue
                                   printslow(f"Sono le {orologio()}", 150, 'testo')
                       else:
                         printslow("Non risponde nessuno.", 150, 'testo')
-                        if timer < 10:
-                            if timer % 2 == 0 and int(timer) >= 2:
-                                final = orologio()
-                                if final == 'a':
+                        if GlVar.timer < 10:
+                            if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                                GlVar.final = orologio()
+                                if GlVar.final == 'a':
                                     Fabriano = False
                                     hub_piazzale = False
-                                    game_over = True
-                                    continui = 'n'
+                                    GlVar.game_over = True
+                                    GlVar.continui = 'n'
                                     continue
                             printslow(f"- In effetti è presto, sono le {orologio()}, perché sono qua? \n"
                                       "- Forse perché so' un coglione!", 150, 'tommy')
@@ -2076,14 +1347,14 @@ while not game_over:
                             if offerte == 'y':
                                 s = compravendita()
                                 if s:
-                                    game_over = True
-                                    continui = 'n'
+                                    GlVar.game_over = True
+                                    GlVar.continui = 'n'
                                     hub_piazzale = False
                                     Fabriano = False
                                     continue
                   else:
                       printslow("Vai da Piazzale Matteotti al centro.", 150, 'testo')
-                      if timer >= 8 and dialogo1_andrea and not dead_andrea:
+                      if GlVar.timer >= 8 and GlVar.dialogo1_andrea and not GlVar.dead_andrea:
                           quest_andrea = True
                           printslow("Mentre giri verso il centro, noti un losco figuro.", 150, 'testo')
                           printslow("- Ma è Andrea!", 150, 'tommy')
@@ -2103,15 +1374,15 @@ while not game_over:
                                         "esplode sorda in una fontana di pezzi di carne e cervella.", 150, 'testo')
                               time.sleep(1.5)
                               printslow("- Vabbè sono sicuro che se ne sarebbe voluto andare così, tra soprannomi divertenti e amici.", 150, 'tommy')
-                              dead_party.append('andrea')
-                              s = finale_genocide(dead_party)
+                              GlVar.dead_party.append('andrea')
+                              s = finale_genocide(GlVar.dead_party)
                               if s == 'a':
-                                  game_over = True
-                                  continui = 'n'
+                                  GlVar.game_over = True
+                                  GlVar.continui = 'n'
                                   hub_piazzale = False
                                   Fabriano = False
                                   continue
-                              dead_andrea = True
+                              GlVar.dead_andrea = True
                               quest_andrea = False
                           elif nome_andrea != 's':
                               printslow(f"- {nomignolo(nome_andrea)}!", 150, 'tommy')
@@ -2148,8 +1419,8 @@ while not game_over:
                                         "Una volta che li avrai, torna da me e condividerò con te i miei poteri.", 100, 'andrea')
                               printslow("- Va bene Mago, mi avvio alla ricerca degli artefatti.", 150, 'tommy')
                               printslow("- In culo alla figa, giovane Padawan", 100, 'andrea')
-                              dialogo1_andrea = False
-                      elif timer >= 8 and not dialogo1_andrea and quest_andrea:
+                              GlVar.dialogo1_andrea = False
+                      elif GlVar.timer >= 8 and not GlVar.dialogo1_andrea and quest_andrea:
                           mago = input(Fore.YELLOW + Back.BLACK + "Vedi il Mago. Vuoi fermarti? 'Y' o 'N': ").lower()
                           andrea = True
                           saggezza = 'y'
@@ -2172,9 +1443,9 @@ while not game_over:
                                       printslow("- Ecco a te:\n"
                                                 f"{random.choice(saggezze)}", 100, 'andrea')
                                       saggezza = input(Fore.YELLOW + Back.BLACK + "Vuoi un'altra perla di saggezza? 'Y' o 'N': ").lower()
-                              elif domanda_mago == 'd' and 'estathe' in oggetti and 'vodka' in oggetti and 'mutandine' in oggetti:
+                              elif domanda_mago == 'd' and 'estathe' in GlVar.oggetti and 'vodka' in GlVar.oggetti and 'mutandine' in GlVar.oggetti:
                                   quest_andrea = False
-                                  timer += 0.5
+                                  GlVar.timer += 0.5
                                   printslow("- Ho portato gli artefatti, Mago.", 150, 'tommy')
                                   printslow("Dici con tono solenne.\n"
                                             "Il mago osserva i tre oggetti, poi con calma declama:", 150, 'testo')
@@ -2190,21 +1461,21 @@ while not game_over:
                                   printslow("- Così dolce... e eccitante... e matto... è proprio un Piçka e Shipkës.\n"
                                             "Tommy, ti sei mostrato all'altezza del compito, e per questo riceverai i miei poteri.\n"
                                             "All'avventura!", 100, 'andrea')
-                                  party.append('andrea')
+                                  GlVar.party.append('andrea')
                                   time.sleep(1.0)
                                   printslow("Andrea, il Mago del Crespuscolo, si unisce al party!", 100, 'testo')
-                                  if timer % 2 == 0 and int(timer) >= 2:
-                                      final = orologio()
-                                      if final == 'a':
+                                  if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                                      GlVar.final = orologio()
+                                      if GlVar.final == 'a':
                                           Fabriano = False
                                           hub_piazzale = False
-                                          game_over = True
-                                          continui = 'n'
+                                          GlVar.game_over = True
+                                          GlVar.continui = 'n'
                                           continue
                                   printslow(f"Sono le {orologio()} mentre ti avvii verso il Centro.", 150, 'testo')
-                              elif domanda_mago == 'd' and 'estathe' not in oggetti and 'vodka' not in oggetti and 'mutandine' not in oggetti:
+                              elif domanda_mago == 'd' and 'estathe' not in GlVar.oggetti and 'vodka' not in GlVar.oggetti and 'mutandine' not in GlVar.oggetti:
                                   printslow("- Torna quando avrai trovato tutti gli ingredienti, giovane padawan.", 100, 'andrea')
-                              elif domanda_mago == 'p' and 'pergamena' in oggetti:
+                              elif domanda_mago == 'p' and 'pergamena' in GlVar.oggetti:
                                   printslow("Il Mago ti guarda e esclama:", 150, 'testo')
                                   printslow("- Tu... Tu... Tu sei in possesso delle pergamene!", 100, 'andrea')
                                   printslow("- Pergamene? Che pergamene?", 150, 'tommy')
@@ -2232,18 +1503,18 @@ while not game_over:
                                   printslow("Hai appena beccato una maledizione venerea!\n"
                                             "                                           \n"
                                             "...In compenso Andrea, Il Mago del Crepuscolo, si unisce al party!", 150, 'testo')
-                                  if timer % 2 == 0 and int(timer) >= 2:
-                                      final = orologio()
-                                      if final == 'a':
+                                  if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
+                                      GlVar.final = orologio()
+                                      if GlVar.final == 'a':
                                           Fabriano = False
                                           hub_piazzale = False
-                                          game_over = True
-                                          continui = 'n'
+                                          GlVar.game_over = True
+                                          GlVar.continui = 'n'
                                           continue
                                   printslow(f"Sono le {orologio()}", 150, 'testo')
-                                  party.append('andrea')
+                                  GlVar.party.append('andrea')
                                   quest_andrea = False
-                              elif domanda_mago == 'p' and 'pergamena' not in oggetti:
+                              elif domanda_mago == 'p' and 'pergamena' not in GlVar.oggetti:
                                   printslow("Non hai nessun documento importante con te.", 100, 'testo')
                           else:
                               printslow("Saluti ossequiosamente il Mago e ti avvii verso il Centro.", 150, 'testo')
@@ -2303,13 +1574,13 @@ while not game_over:
             printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
                       "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
                       "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            game_over = True
-            continui = 'n'
+            GlVar.game_over = True
+            GlVar.continui = 'n'
             Fabriano = False
             continue
-    continui = input("Game Over, vuoi ricominciare? 'Y' o 'N': ").lower()
-    if continui == 'y':
-        game_over = False
+    GlVar.continui = input("Game Over, vuoi ricominciare? 'Y' o 'N': ").lower()
+    if GlVar.continui == 'y':
+        GlVar.game_over = False
         velocita_testo = input(Fore.YELLOW + Style.BRIGHT + Back.BLACK + "Scegli la velocità del testo a schermo. \n"
                                                                          "Type: 'lento', 'normale' o 'veloce': ").lower()
         if velocita_testo == "lento":
