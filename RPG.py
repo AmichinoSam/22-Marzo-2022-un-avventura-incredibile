@@ -1,4 +1,3 @@
-import colorama
 from colorama import Fore, Back, Style
 import time, random
 from Finali import finale_genocide
@@ -208,26 +207,20 @@ def RPG(mod_forza):
                             time.sleep(0.5)
                             azione_nemico = ["attacco", "attacco", "attacco", "attacco", "special"]
                             turno_nemico = random.choice(azione_nemico)
-                            if turno_nemico == "special":
-                                if current_hp_nemico <= int(nemici[nemico][0] / 4):
-                                    printslow(f"{nemico} usa il suo special, *{nemici[nemico][4]}*!", 150, 'testo')
-                                    danno_nemico = (nemici[nemico][1] + int(round((random.random() * 5), 2))) * \
-                                                   nemici[nemico][2]
-                                    printslow(f"{nome_giocatore} riceve {danno_nemico} danni!", 150, 'testo')
-                                    current_hp_tommy -= danno_nemico
-                                    printslow(f"Ti sono rimasti {current_hp_tommy} HP", 150, 'testo')
-                                else:
-                                    printslow(f"{nemico} ti attacca!", 150, 'testo')
-                                    danno_nemico = nemici[nemico][1] + int(round((random.random() * 5), 2))
-                                    printslow(f"{nome_giocatore} riceve {danno_nemico} danni!", 150, 'testo')
-                                    current_hp_tommy -= danno_nemico
-                                    printslow(f"Ti sono rimasti {current_hp_tommy} HP", 150, 'testo')
+                            if turno_nemico == "special" and current_hp_nemico <= int(nemici[nemico][0] / 4):
+                                printslow(f"{nemico} usa il suo special, *{nemici[nemico][4]}*!", 150, 'testo')
+                                danno_nemico = (nemici[nemico][1] + int(round((random.random() * 5), 2))) * \
+                                               nemici[nemico][2]
+                                printslow(f"{nome_giocatore} riceve {danno_nemico} danni!", 150, 'testo')
+                                current_hp_tommy -= danno_nemico
+                                printslow(f"Ti sono rimasti {current_hp_tommy} HP", 150, 'testo')
                             else:
                                 printslow(f"{nemico} ti attacca!", 150, 'testo')
                                 danno_nemico = nemici[nemico][1] + int(round((random.random() * 5), 2))
                                 printslow(f"{nome_giocatore} riceve {danno_nemico} danni!", 150, 'testo')
                                 current_hp_tommy -= danno_nemico
                                 printslow(f"Ti sono rimasti {current_hp_tommy} HP", 150, 'testo')
+
                             if current_hp_tommy <= 0:
                                 printslow(f"Colpo fatale! {nome_giocatore} è stato sconfitto!", 150, 'testo')
                                 game_over_rpg = True

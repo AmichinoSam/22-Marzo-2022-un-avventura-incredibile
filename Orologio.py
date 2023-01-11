@@ -39,7 +39,7 @@ def orologio():
         printslow("Grazie bro, sicuro! Dove?", 150, 'tommy')
         printslow("Vienimi a prendere alle 18 e decidiamo. A stasera bro", 150, 'agron')
         time.sleep(2.0)
-    elif 'andrea' in GlVar.party and 'giulio' in GlVar.party and 'agron' in GlVar.party and 'samuel' in GlVar.party:
+    elif 'andrea' in GlVar.party and 'giulio' in GlVar.party and 'agron' in GlVar.party and 'samuel' in GlVar.party and GlVar.timer % 2 == 0:
             return finale_buono()
     elif int(orario) >= 22:
         printslow("Si è fatta una certa.", 150, 'testo')

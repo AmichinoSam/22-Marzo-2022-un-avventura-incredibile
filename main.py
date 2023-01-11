@@ -1034,6 +1034,15 @@ while not GlVar.game_over:
                                                     "Type 'B' se vuoi andare al Borgo: ").lower()
 
           elif hub2 == 'p':
+
+              def hub2switcher():
+                  GlVar.game_over = True
+                  GlVar.continui = 'n'
+                  global hub_piazzale
+                  global Fabriano
+                  hub_piazzale = False
+                  Fabriano = False
+
               printslow("Prendi per la Pisana.\n"
                         "Arrivi in Piazzale Matteotti.", 150, 'testo')
               hub_piazzale = True
@@ -1063,10 +1072,7 @@ while not GlVar.game_over:
                   elif piazzale == 'm':
                       s = compravendita()
                       if s:
-                          GlVar.game_over = True
-                          GlVar.continui = 'n'
-                          hub_piazzale = False
-                          Fabriano = False
+                          hub2switcher()
                           continue
                   elif piazzale == 'a':
                       printslow("Decidi di suonare a casa di Agron.", 150, 'testo')
@@ -1107,10 +1113,7 @@ while not GlVar.game_over:
                               if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
                                   GlVar.final = orologio()
                                   if GlVar.final == 'a':
-                                      Fabriano = False
-                                      hub_piazzale = False
-                                      GlVar.game_over = True
-                                      GlVar.continui = 'n'
+                                      hub2switcher()
                                       continue
                               printslow(f"Sono le {orologio()}", 150, 'testo')
                           else:
@@ -1299,19 +1302,13 @@ while not GlVar.game_over:
                                   if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
                                       GlVar.final = orologio()
                                       if GlVar.final == 'a':
-                                          Fabriano = False
-                                          hub_piazzale = False
-                                          GlVar.game_over = True
-                                          GlVar.continui = 'n'
+                                          hub2switcher()
                                           continue
                                   printslow(f"Sono le {orologio()}", 150, 'testo')
                                   GlVar.dead_party.append('agron')
                                   s = finale_genocide(GlVar.dead_party)
                                   if s == 'a':
-                                      GlVar.game_over = True
-                                      GlVar.continui = 'n'
-                                      hub_piazzale = False
-                                      Fabriano = False
+                                      hub2switcher()
                                       continue
                               else:
                                   GlVar.agron_flag = False
@@ -1324,10 +1321,7 @@ while not GlVar.game_over:
                                   if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
                                       GlVar.final = orologio()
                                       if GlVar.final == 'a':
-                                          Fabriano = False
-                                          hub_piazzale = False
-                                          GlVar.game_over = True
-                                          GlVar.continui = 'n'
+                                          hub2switcher()
                                           continue
                                   printslow(f"Sono le {orologio()}", 150, 'testo')
                       else:
@@ -1336,10 +1330,7 @@ while not GlVar.game_over:
                             if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
                                 GlVar.final = orologio()
                                 if GlVar.final == 'a':
-                                    Fabriano = False
-                                    hub_piazzale = False
-                                    GlVar.game_over = True
-                                    GlVar.continui = 'n'
+                                    hub2switcher()
                                     continue
                             printslow(f"- In effetti è presto, sono le {orologio()}, perché sono qua? \n"
                                       "- Forse perché so' un coglione!", 150, 'tommy')
@@ -1347,10 +1338,7 @@ while not GlVar.game_over:
                             if offerte == 'y':
                                 s = compravendita()
                                 if s:
-                                    GlVar.game_over = True
-                                    GlVar.continui = 'n'
-                                    hub_piazzale = False
-                                    Fabriano = False
+                                    hub2switcher()
                                     continue
                   else:
                       printslow("Vai da Piazzale Matteotti al centro.", 150, 'testo')
@@ -1377,10 +1365,7 @@ while not GlVar.game_over:
                               GlVar.dead_party.append('andrea')
                               s = finale_genocide(GlVar.dead_party)
                               if s == 'a':
-                                  GlVar.game_over = True
-                                  GlVar.continui = 'n'
-                                  hub_piazzale = False
-                                  Fabriano = False
+                                  hub2switcher()
                                   continue
                               GlVar.dead_andrea = True
                               quest_andrea = False
@@ -1467,10 +1452,7 @@ while not GlVar.game_over:
                                   if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
                                       GlVar.final = orologio()
                                       if GlVar.final == 'a':
-                                          Fabriano = False
-                                          hub_piazzale = False
-                                          GlVar.game_over = True
-                                          GlVar.continui = 'n'
+                                          hub2switcher()
                                           continue
                                   printslow(f"Sono le {orologio()} mentre ti avvii verso il Centro.", 150, 'testo')
                               elif domanda_mago == 'd' and 'estathe' not in GlVar.oggetti and 'vodka' not in GlVar.oggetti and 'mutandine' not in GlVar.oggetti:
@@ -1506,10 +1488,7 @@ while not GlVar.game_over:
                                   if GlVar.timer % 2 == 0 and int(GlVar.timer) >= 2:
                                       GlVar.final = orologio()
                                       if GlVar.final == 'a':
-                                          Fabriano = False
-                                          hub_piazzale = False
-                                          GlVar.game_over = True
-                                          GlVar.continui = 'n'
+                                          hub2switcher()
                                           continue
                                   printslow(f"Sono le {orologio()}", 150, 'testo')
                                   GlVar.party.append('andrea')
@@ -1526,58 +1505,14 @@ while not GlVar.game_over:
                           hub_piazzale = False
 
           elif hub2 == 'b':
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
-                      "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
-                      "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
-            GlVar.game_over = True
-            GlVar.continui = 'n'
-            Fabriano = False
-            continue
+              for i in range(0, 10):
+                  printslow("Porcoddio coglione che cazzo vai al Borgo?\n"
+                            "Ti ho chiesto se vuoi andare AL BORGO, non a Pusherland.\n"
+                            "Porcoddio mi fai bestemmià. Ti meriti un cazzo di Game Over.", 2000, 'testo')
+              GlVar.game_over = True
+              GlVar.continui = 'n'
+              Fabriano = False
+              continue
     GlVar.continui = input("Game Over, vuoi ricominciare? 'Y' o 'N': ").lower()
     if GlVar.continui == 'y':
         GlVar.game_over = False
